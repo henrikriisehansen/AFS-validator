@@ -21,7 +21,7 @@ class ConfigParser():
     def set_config(self,**kwargs):
         for key, value in kwargs.items():
             self.config['emails'][key] = value
-            print(self.config['emails'][key])
+            
         with open('config.ini', 'w') as configfile:
             self.config.write(configfile)
     
