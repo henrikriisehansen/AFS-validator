@@ -10,7 +10,7 @@ class Email:
     def __init__(self):
         pass
 
-    def send_email(self, subject, email_from, email_to, email_bcc, htmlBody):
+    def send_email(self, subject, email_from, email_to, email_bcc, htmlBody) -> None:
         smtp_port = 587
         smtp_server = "smtp.gmail.com"
         pswd = os.getenv("APP_PASSWORD")
