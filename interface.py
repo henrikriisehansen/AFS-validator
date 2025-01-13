@@ -18,16 +18,15 @@ class App(customtkinter.CTk):
 
         self.frame_padx = 8
         self.frame_pady = 8
-        self.frame_corner_radius = 10
+        self.frame_corner_radius = 8
 
-        self.element_padx = 10
-        self.element_pady = 0
-        self.element_corner_radius = 10
-
+        self.element_padx = 8
+        self.element_pady = 8
+        
         ################################################################
 
         self.email = Email()
-        self.title("AFS")
+        self.title("AFS - generator")
         self.geometry("1000x600")
         self.font = customtkinter.CTkFont(family="roboto", size=13, weight="bold")
         self.grid_columnconfigure((0, 1, 2), weight=1)
@@ -35,47 +34,57 @@ class App(customtkinter.CTk):
 
         #column 0
 
-        self.set_email_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius)
+        self.set_email_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
        
-        self.set_email_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="nsew")
-        self.set_email_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), weight=1)
+        self.set_email_frame.grid(row=0, column=0, sticky="news")
+        self.set_email_frame.grid_rowconfigure((0, 1, 2), weight=1)
         self.set_email_frame.grid_columnconfigure((0), weight=1)
 
-        self.sender_email_label = customtkinter.CTkLabel(self.set_email_frame, text="Sender email:", fg_color="transparent", font=self.font)
-        self.sender_email_label.grid(row=0, column=0, padx=self.element_padx, sticky="ws")
+        self.set_email_frame_entry = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
+        self.set_email_frame_entry.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="new")
+        self.set_email_frame_entry.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.set_email_frame_entry.grid_columnconfigure((0), weight=1)
 
-        self.sender_email_Entry = customtkinter.CTkEntry(self.set_email_frame, placeholder_text="Sender email")
-        self.sender_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        self.sender_email_Entry.insert(0, self.config.get('senderEmail'))
+        self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
+        self.set_email_frame_buttons.grid(row=2, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="sew")
+        self.set_email_frame_buttons.grid_rowconfigure((0, 1), weight=1)
+        self.set_email_frame_buttons.grid_columnconfigure((0), weight=1)
 
-        self.reciepent_email_label = customtkinter.CTkLabel(self.set_email_frame, text="Recienpent email:", fg_color="transparent", font=self.font)
-        self.reciepent_email_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        # self.sender_email_label = customtkinter.CTkLabel(self.set_email_frame, text="Sender email:", fg_color="transparent", font=self.font)
+        # self.sender_email_label.grid(row=0, column=0, padx=self.element_padx, sticky="ws")
 
-        self.reciepent_email_Entry = customtkinter.CTkEntry(self.set_email_frame, placeholder_text="Recienpent email")
-        self.reciepent_email_Entry.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        # self.sender_email_Entry = customtkinter.CTkEntry(self.set_email_frame, placeholder_text="Sender email")
+        # self.sender_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        # self.sender_email_Entry.insert(0, self.config.get('senderEmail'))
+
+        self.reciepent_email_label = customtkinter.CTkLabel( self.set_email_frame_entry, text="Recienpent email:", fg_color="transparent", font=self.font)
+        self.reciepent_email_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+
+        self.reciepent_email_Entry = customtkinter.CTkEntry( self.set_email_frame_entry, placeholder_text="Recienpent email")
+        self.reciepent_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.reciepent_email_Entry.insert(0, self.config.get('recipientEmail'))
 
-        self.afs_email_label = customtkinter.CTkLabel(self.set_email_frame, text="AFS email:", fg_color="transparent", font=self.font)
-        self.afs_email_label.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.afs_email_label = customtkinter.CTkLabel( self.set_email_frame_entry, text="AFS email:", fg_color="transparent", font=self.font)
+        self.afs_email_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
-        self.afs_email_Entry = customtkinter.CTkEntry(self.set_email_frame, placeholder_text="AFS email")
-        self.afs_email_Entry.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.afs_email_Entry = customtkinter.CTkEntry( self.set_email_frame_entry, placeholder_text="AFS email")
+        self.afs_email_Entry.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.afs_email_Entry.insert(0, self.config.get('afsEmail'))
 
-        self.combobox_label = customtkinter.CTkLabel(self.set_email_frame, text="Select invitation type:", fg_color="transparent", font=self.font)
-        self.combobox_label.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        # self.combobox_label = customtkinter.CTkLabel(self.set_email_frame, text="Select invitation type:", fg_color="transparent", font=self.font)
+        # self.combobox_label.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
-        self.combobox_var = customtkinter.StringVar(value="Service Review")
-        self.combobox = customtkinter.CTkComboBox(self.set_email_frame, values=["Service Review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
-                                                  command=self.combobox_callback, variable=self.combobox_var)
-        self.combobox_var.set("Service Review")
-        self.combobox.grid(row=7, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        # self.combobox_var = customtkinter.StringVar(value="Service Review")
+        # self.combobox = customtkinter.CTkComboBox(self.set_email_frame, values=["Service Review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
+        #                                           command=self.combobox_callback, variable=self.combobox_var)
+        # self.combobox_var.set("Service Review")
+        # self.combobox.grid(row=7, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
 
-        self.generate_email = customtkinter.CTkButton(self.set_email_frame, text="Generate Email", command=self.generate_email_callback)
-        self.generate_email.grid(row=15, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.generate_email = customtkinter.CTkButton(self.set_email_frame_buttons, text="Generate Email", command=self.generate_email_callback)
+        self.generate_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
-        self.send_email = customtkinter.CTkButton(self.set_email_frame, text="Send Email", command=self.send_email_callback)
-        self.send_email.grid(row=16, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.send_email = customtkinter.CTkButton(self.set_email_frame_buttons, text="Send Email", command=self.send_email_callback)
+        self.send_email.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
         #column 1
 
@@ -94,7 +103,7 @@ class App(customtkinter.CTk):
         self.email_label.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.email_body = customtkinter.CTkTextbox(self.email_frame,height=200)
-        self.email_body.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.email_body.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewsn")
 
         #column 2
 
@@ -103,7 +112,7 @@ class App(customtkinter.CTk):
 
     def send_email_callback(self):
         subject = "Trustpilot Review"
-        email_from = self.sender_email_Entry.get()
+        # email_from = self.sender_email_Entry.get()
         email_to = self.reciepent_email_Entry.get()
         email_bcc = self.afs_email_Entry.get()
 
