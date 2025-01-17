@@ -7,10 +7,6 @@ class PayloadType(Enum):
     SERVICE_REVIEW = "serviceReview"
     SERVICE_AND_PRODUCT_REVIEW = "serviceAndProductReview"
     SERVICE_AND_PRODUCT_REVIEW_SKU = "serviceAndProductReviewWithFollowUp"
-
-class ProductType(Enum):
-    PRODUCT_SKUS = "productSkus"
-    PRODUCTS = "products"
         
 class PayloadBuilder:
     """Builds the payload using composition."""
@@ -77,8 +73,8 @@ class PayloadData:
         self.senderName = kwargs.get('senderName',"john doe")
         self.senderEmail = kwargs.get('senderEmail',"noreply.invitations@trustpilot.com")
         self.referenceId = kwargs.get('referenceId',f"test{self.generate_random_string(12)}")
-        self.recipientName = kwargs.get('recipientName',f"hrh+{self.generate_random_string(12)}")
-        self.recipientEmail = kwargs.get('recipientEmail',f"hrh+{self.generate_random_string(12)}@trustpilot.com")
+        self.recipientName = kwargs.get('recipientName',f"John{self.generate_random_string(12)}")
+        self.recipientEmail = kwargs.get('recipientEmail',f"john_doe{self.generate_random_string(12)}@gmail.com")
         self.templateId = kwargs.get('templateId',"529c0abfefb96008b894ad02")
         self.prefferedSendtimeServiceReview = kwargs.get('prefferedSendTimeServiceReview',0)
         self.redirectURI = kwargs.get('redirectUri',"http://trustpilot.com")

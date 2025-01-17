@@ -21,6 +21,8 @@ class App(customtkinter.CTk):
 
         self.element_padx:int = 8
         self.element_pady:int = 8
+
+       
         
         ################################################################
 
@@ -78,11 +80,11 @@ class App(customtkinter.CTk):
 
         self.smtp_server_entry = customtkinter.CTkEntry(master=self.set_email_frame_smtp, placeholder_text="smtp_server")
         self.smtp_server_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.smtp_server_entry.insert(0, self.config.get('smtp','smtpServer'))
 
         self.smtp_port = customtkinter.CTkLabel(master=self.set_email_frame_smtp, text="smtp_port:", fg_color="transparent", font=self.font)
         self.smtp_port.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
         
-
         self.smtp_port_entry = customtkinter.CTkEntry(master=self.set_email_frame_smtp, placeholder_text="smtp_port")
         self.smtp_port_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.smtp_port_entry.insert(0, self.config.get('smtp','smtpPort'))
@@ -122,12 +124,14 @@ class App(customtkinter.CTk):
 
         self.subject = customtkinter.CTkEntry(master=self.email_box_upper_frame, placeholder_text="Email Subject")
         self.subject.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.subject.insert(0, self.config.get('emails', 'emailSubject'))
 
         self.to_email_entry_label = customtkinter.CTkLabel(master=self.email_box_upper_frame, text="To Email:", fg_color="transparent", font=self.font)
         self.to_email_entry_label.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.to_email_entry = customtkinter.CTkEntry(master=self.email_box_upper_frame, placeholder_text="To Email")
         self.to_email_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.to_email_entry.insert(0, self.config.get('emails', 'recipientEmail'))
 
         self.BCC_email_entry_label = customtkinter.CTkLabel(master=self.email_box_upper_frame, text="BCC Email:", fg_color="transparent", font=self.font)
         self.BCC_email_entry_label.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
@@ -164,16 +168,18 @@ class App(customtkinter.CTk):
         self.combobox_var = customtkinter.StringVar(value="Service Review")
         self.combobox = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["Service Review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
                                                   command=self.combobox_callback, variable=self.combobox_var)
-        self.combobox_var.set("Service Review")
+        self.combobox.set(self.config.get("settings","invitationType"))
         self.combobox.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
 
         self.send_afs_directly_checkbox_var = customtkinter.StringVar(value="on")
         self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=self.send_afs_directly_callback, variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
         self.send_afs_directly_checkbox.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.send_afs_directly_checkbox._variable.set(self.config.get("settings","sendAfsDirectCheckBox"))
 
         self.locale_var = customtkinter.StringVar(value="on")
         self.locale_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Locale", command=self.locale_callback, variable=self.locale_var, onvalue="on", offvalue="off")
         self.locale_checkbox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.locale_checkbox._variable.set(self.config.get("settings","localeCheckBox"))
 
         self.locale_dropdown_var = customtkinter.StringVar(value="en-US")
         self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["en-US", "da-DK", "de-DE", "es-ES", "fr-FR", "it-IT", "nl-NL"], command=self.locale_dropdown_callback, variable=self.locale_dropdown_var)
@@ -190,37 +196,49 @@ class App(customtkinter.CTk):
         self.sku_checkbox_var = customtkinter.StringVar(value="on")
         self.sku_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set SKU", command=self.sku_callback, variable=self.sku_checkbox_var, onvalue="on", offvalue="off")
         self.sku_checkbox.grid(row=7, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.sku_checkbox._variable.set(self.config.get("settings", "skuCheckBox"))
 
         self.sku_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="SKU values")
         self.sku_entry.grid(row=8, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.sku_entry.insert(0, self.config.get("settings", "sku"))
 
         self.location_id_checkbox_var = customtkinter.StringVar(value="on")
         self.location_id_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Location ID", command=self.location_id_callback, variable=self.location_id_checkbox_var, onvalue="on", offvalue="off")
         self.location_id_checkbox.grid(row=9, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.location_id_checkbox._variable.set(self.config.get("settings", "locationIdCheckBox"))
 
         self.location_id_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Location ID values")
         self.location_id_entry.grid(row=10, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-
+        self.location_id_entry.insert(0, self.config.get("settings", "locationId"))
 
         self.tags_label = customtkinter.CTkLabel(master=self.settings_box_frame, text="Tags:", fg_color="transparent", font=self.font)
         self.tags_label.grid(row=11, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.tags_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Tags")
         self.tags_entry.grid(row=12, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.tags_entry.insert(0, self.config.get("settings", "tags"))
 
         self.prefferedSendTime_checkbox_var = customtkinter.StringVar(value="on")
         self.prefferedSendTime_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Preffered Send Time", command=self.prefferedSendTime_callback, variable=self.prefferedSendTime_checkbox_var, onvalue="on", offvalue="off")
         self.prefferedSendTime_checkbox.grid(row=13, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.prefferedSendTime_checkbox._variable.set(self.config.get("settings", "prefferedSendTimeCheckBox"))
 
         self.prefferedSendTime_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Preffered Send Time")
         self.prefferedSendTime_entry.grid(row=14, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.prefferedSendTime_entry.insert(0, self.config.get("settings", "prefferedSendTime"))
 
         self.productReviewInvitationPrefferedSendTime_checkbox_var = customtkinter.StringVar(value="on")
         self.productReviewInvitationPrefferedSendTime_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Product Review Invitation Preffered Send Time", command=self.productReviewInvitationPrefferedSendTime_callback, variable=self.productReviewInvitationPrefferedSendTime_checkbox_var, onvalue="on", offvalue="off")
         self.productReviewInvitationPrefferedSendTime_checkbox.grid(row=15, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
+        self.productReviewInvitationPrefferedSendTime_checkbox._variable.set(self.config.get("settings", "productReviewInvitationPrefferedSendTimeCheckBox"))
 
         self.productReviewInvitationPrefferedSendTime_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Product Review Invitation Preffered Send Time")
         self.productReviewInvitationPrefferedSendTime_entry.grid(row=16, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        self.productReviewInvitationPrefferedSendTime_entry.insert(0, self.config.get("settings", "productReviewInvitationPrefferedSendTime"))
+
+        self.payload_type = self.get_payload_type()
+        self.payload = PayloadBuilder(self.payload_type, **self.config).build()
+        self.email_body.insert(0.0, self.generate_html(self.payload))
 
     def productReviewInvitationPrefferedSendTime_callback(self):
         print("product review invitation preffered send time checkbox clicked:", self.productReviewInvitationPrefferedSendTime_checkbox.get())
@@ -278,6 +296,12 @@ class App(customtkinter.CTk):
         self.config.set('smtp','smtpPassword',self.smtp_password_entry.get())
         self.config.set('smtp','smtpSenderEmail',self.sender_email_Entry.get())
 
+        self.config.set('settings','skuCheckBox',self.sku_checkbox_var.get())
+        self.config.set('settings','locationIdCheckBox',self.location_id_checkbox_var.get())
+        self.config.set('settings','tags',self.tags_entry.get())
+        self.config.set('settings','prefferedSendTimeCheckBox',self.prefferedSendTime_checkbox_var.get())
+        self.config.set('settings','productReviewInvitationPrefferedSendTimeCheckBox',self.productReviewInvitationPrefferedSendTime_checkbox_var.get())
+
         self.configparser.set_config()
 
     def locale_callback(self):
@@ -287,21 +311,11 @@ class App(customtkinter.CTk):
         print("send afs directly")
 
     def send_email_callback(self):
-        subject = "Trustpilot Review"
-        # email_from = self.sender_email_Entry.get()
-        email_to = self.reciepent_email_Entry.get()
-        email_bcc = self.afs_email_Entry.get()
-
+        
         payload_type = self.get_payload_type()
-        items = {
-
-            "recipientName": "hrh",
-            "recipientEmail": email_to
-            
-           
-        }
-        payload = PayloadBuilder(payload_type, **items).build()
-        self.email_body.insert(0.0, pformat(payload))
+        payload = PayloadBuilder(payload_type, **self.config).build()
+        self.email_body.delete(0.0, "end")
+        self.email_body.insert(0.0, self.generate_html(payload))
         html = self.generate_html(payload)
         self.update_config()
         # self.email.send_email(subject, email_from, email_to, email_bcc, html)
@@ -338,17 +352,10 @@ class App(customtkinter.CTk):
             return PayloadType.SERVICE_AND_PRODUCT_REVIEW
 
     def generate_html(self, payload):
-        sds = f"<script type='application/json+trustpilot'>" + json.dumps(payload) + "\n" + "</script>"
-        html = f"""
-        <html>
-          <head>{sds}</head>
-          <body>
-            <p>Hi!<br>
-              How are you?<br>
-            </p>
-          </body>
-        </html>
-        """
+        # TODO: Implement actual payload generation and rendering here.
+        sds = json.dumps(payload, indent=1)
+        html = f"""<html>\n<head>\n<script type='application/json+trustpilot'>{sds}</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"""
+         
         return html
 
     def combobox_callback(self, choice):
