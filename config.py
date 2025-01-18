@@ -1,7 +1,5 @@
 import configparser, os
 
-
-
 class ConfigParser():
     def __init__(self):
         # Create the config file if it doesn't exist,
@@ -49,8 +47,22 @@ class ConfigParser():
     def get_config(self):
         return self.config
     
-    def set_config(self):
+    def set_config(self,interface):
         
+        self.config.set('emails','afsEmail',interface.afs_email_Entry.get())
+        self.config.set('emails','recipientEmail',interface.reciepent_email_Entry.get())
+
+        self.config.set('smtp','smtpServer',interface.smtp_server_entry.get())
+        self.config.set('smtp','smtpPort',interface.smtp_port_entry.get())
+        self.config.set('smtp','smtpPassword',interface.smtp_password_entry.get())
+        self.config.set('smtp','smtpSenderEmail',interface.sender_email_Entry.get())
+
+        self.config.set('settings','skuCheckBox',interface.sku_checkbox_var.get())
+        self.config.set('settings','locationIdCheckBox',interface.location_id_checkbox_var.get())
+        self.config.set('settings','tags',interface.tags_entry.get())
+        self.config.set('settings','prefferedSendTimeCheckBox',interface.prefferedSendTime_checkbox_var.get())
+        self.config.set('settings','productReviewInvitationPrefferedSendTimeCheckBox',interface.productReviewInvitationPrefferedSendTime_checkbox_var.get())
+
         with open('config.ini', 'w') as configfile:
             self.config.write(configfile)
 

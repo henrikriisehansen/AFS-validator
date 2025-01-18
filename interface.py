@@ -21,8 +21,6 @@ class App(customtkinter.CTk):
 
         self.element_padx:int = 8
         self.element_pady:int = 8
-
-       
         
         ################################################################
 
@@ -167,22 +165,22 @@ class App(customtkinter.CTk):
 
         self.combobox_var = customtkinter.StringVar(value="Service Review")
         self.combobox = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["Service Review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
-                                                  command=self.combobox_callback, variable=self.combobox_var)
+                                                  command=lambda x:self.callback(self.combobox_var.get()), variable=self.combobox_var)
         self.combobox.set(self.config.get("settings","invitationType"))
         self.combobox.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
 
         self.send_afs_directly_checkbox_var = customtkinter.StringVar(value="on")
-        self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=self.send_afs_directly_callback, variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
+        self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=lambda:self.callback(self.send_afs_directly_checkbox_var.get()), variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
         self.send_afs_directly_checkbox.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
         self.send_afs_directly_checkbox._variable.set(self.config.get("settings","sendAfsDirectCheckBox"))
 
         self.locale_var = customtkinter.StringVar(value="on")
-        self.locale_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Locale", command=self.locale_callback, variable=self.locale_var, onvalue="on", offvalue="off")
+        self.locale_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Locale", command=lambda:self.callback(self.locale_var.get()), variable=self.locale_var, onvalue="on", offvalue="off")
         self.locale_checkbox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
         self.locale_checkbox._variable.set(self.config.get("settings","localeCheckBox"))
 
         self.locale_dropdown_var = customtkinter.StringVar(value="en-US")
-        self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["en-US", "da-DK", "de-DE", "es-ES", "fr-FR", "it-IT", "nl-NL"], command=self.locale_dropdown_callback, variable=self.locale_dropdown_var)
+        self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["en-US", "da-DK", "de-DE", "es-ES", "fr-FR", "it-IT", "nl-NL"], command=lambda x:self.callback(self.locale_dropdown.get()), variable=self.locale_dropdown_var)
         self.locale_dropdown.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         
         self.template_checkbox_var = customtkinter.StringVar(value="on")
@@ -240,24 +238,9 @@ class App(customtkinter.CTk):
         self.payload = PayloadBuilder(self.payload_type, **self.config).build()
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
-    def productReviewInvitationPrefferedSendTime_callback(self):
-        print("product review invitation preffered send time checkbox clicked:", self.productReviewInvitationPrefferedSendTime_checkbox.get())
-
-    def prefferedSendTime_callback(self):
-        print("preffered send time checkbox clicked:", self.prefferedSendTime_checkbox.get())
-
-    def location_id_callback(self):
-        print("location id checkbox clicked:", self.location_id_checkbox.get())
-
-    def sku_callback(self):
-        print("sku checkbox clicked:", self.sku_checkbox.get())
-
-    def template_dropdown_callback(self, choice):
-        print("template dropdown clicked:", choice)
-
-    def template_callback(self):
-        print("combobox dropdown clicked:", self.template_checkbox_var.get())
-
+    def callback(self, parameter):
+        print("get event: ",parameter)
+        self.update_config()
     def locale_dropdown_callback(self, choice):
 
         items = {
@@ -288,27 +271,7 @@ class App(customtkinter.CTk):
         print("locale dropdown clicked:", items.get(choice))
     def update_config(self):
 
-        self.config.set('emails','afsEmail',self.afs_email_Entry.get())
-        self.config.set('emails','recipientEmail',self.reciepent_email_Entry.get())
-
-        self.config.set('smtp','smtpServer',self.smtp_server_entry.get())
-        self.config.set('smtp','smtpPort',self.smtp_port_entry.get())
-        self.config.set('smtp','smtpPassword',self.smtp_password_entry.get())
-        self.config.set('smtp','smtpSenderEmail',self.sender_email_Entry.get())
-
-        self.config.set('settings','skuCheckBox',self.sku_checkbox_var.get())
-        self.config.set('settings','locationIdCheckBox',self.location_id_checkbox_var.get())
-        self.config.set('settings','tags',self.tags_entry.get())
-        self.config.set('settings','prefferedSendTimeCheckBox',self.prefferedSendTime_checkbox_var.get())
-        self.config.set('settings','productReviewInvitationPrefferedSendTimeCheckBox',self.productReviewInvitationPrefferedSendTime_checkbox_var.get())
-
-        self.configparser.set_config()
-
-    def locale_callback(self):
-        print(f"locale: {self.locale_var.get()}")
-
-    def send_afs_directly_callback(self):
-        print("send afs directly")
+        self.configparser.set_config(self)
 
     def send_email_callback(self):
         
