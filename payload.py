@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from config import ConfigParser
 from enum import Enum
 import random
 import string
@@ -11,7 +12,9 @@ class PayloadType(Enum):
 class PayloadBuilder:
     """Builds the payload using composition."""
 
-    def __init__(self, payload_type, **kwargs):
+    def __init__(self, payload_type,config=None,**kwargs):
+
+        print(config)
         
         self.payload_type = payload_type
         self.payload_data = PayloadData(**kwargs).get_payload_data()
@@ -64,6 +67,8 @@ class PayloadData:
     Contains data specific to the payload.
     """
     def __init__(self, **kwargs):
+
+        print(kwargs.get('settings'))
 
         # service reviews
         
