@@ -1,7 +1,7 @@
 import configparser, os
 
 class ConfigParser():
-    def __init__(self):
+    def __init__(self) -> None:
         # Create the config file if it doesn't exist,
         # and populate it with default values if necessary.
         self.config = configparser.ConfigParser()
@@ -27,7 +27,7 @@ class ConfigParser():
             self.config.set('settings','localeCheckBox','off')
             self.config.set('settings','locale','en-US')
             self.config.set('settings','templateCheckBox','off')
-            self.config.set('settings','template','')
+            self.config.set('settings','template','1234567')
             self.config.set('settings','sku','1234,12345')
             self.config.set('settings','skuCheckBox','off')
             self.config.set('settings','locationIdCheckBox','off')
@@ -44,10 +44,15 @@ class ConfigParser():
         
         self.config.read('config.ini')
        
-    def get_config(self):
-        return self.config
+    def get_config(self) -> configparser.ConfigParser:
+
+        # print({s:dict(self.config.items(s)) for s in self.config.sections()})
+        return  self.config
     
-    def set_config(self,interface):
+    def _get_config(self) -> dict:
+        return {s:dict(self.config.items(s)) for s in self.config.sections()}
+    
+    def set_config(self,interface) -> None:
         
         self.config.set('emails','afsEmail',interface.afs_email_Entry.get())
         self.config.set('emails','recipientEmail',interface.reciepent_email_Entry.get())
