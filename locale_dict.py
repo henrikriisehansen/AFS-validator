@@ -1,10 +1,6 @@
 class LocaleParser():
     def __init__(self):
 
-        self.dict = {}
-
-    def locale(self, choice):
-
         self.dict = {
             "en-US": "www.trustpilot.com",
             "de-AT": "at.trustpilot.com",
@@ -31,4 +27,8 @@ class LocaleParser():
             "en-GB": "uk.trustpilot.com"
         }
 
+    def locale(self, choice):
         return self.dict[choice]
+    
+    def get_locale(self):
+        return self.dict

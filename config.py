@@ -10,7 +10,7 @@ class ConfigParser():
         if not os.path.exists('config.ini'):
 
             self.config.add_section('emails')
-            self.config.set('emails','afs_email','domain+1234@invite.trustpilot.com')
+            self.config.set('emails','afs_email','')
             self.config.set('emails','recipient_email','recipientEmail@gmail.com')
             self.config.set('emails','recipient_name','recipientName')
             self.config.set('emails','email_subject','test email subject')
@@ -36,7 +36,7 @@ class ConfigParser():
             self.config.set('settings','preffered_sendtime_checkbox','off')
             self.config.set('settings','preffered_send_time','0')
             self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
-            self.config.set('settings','product_review_invitation_preffered_sendtime','o')
+            self.config.set('settings','product_review_invitation_preffered_sendtime','0')
            
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)

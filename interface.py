@@ -4,6 +4,7 @@ from sendEmail import Email
 import json
 from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
+from locale_dict import LocaleParser
 
 
 class App(customtkinter.CTk):
@@ -15,6 +16,7 @@ class App(customtkinter.CTk):
 
         self.configparser:ConfigParser = ConfigParser()
         self.data:dict = self.configparser._get_config()
+        self.locale_data:dict = LocaleParser().get_locale()
 
         self.frame_padx:int = 8
         self.frame_pady:int = 8
@@ -197,7 +199,6 @@ class App(customtkinter.CTk):
         self.combobox.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.combobox.set(self.data["settings"]["invitation_type"])
         
-
         self.send_afs_directly_checkbox_var = customtkinter.StringVar(value="on")
         self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=lambda:self.event_callback("send afs direct"), variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
         self.send_afs_directly_checkbox.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
@@ -208,8 +209,8 @@ class App(customtkinter.CTk):
         self.locale_checkbox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
         self.locale_checkbox._variable.set(self.data["settings"]["locale_checkbox"])
 
-        self.locale_dropdown_var = customtkinter.StringVar(value="en-US")
-        self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["en-US", "da-DK", "de-DE", "es-ES", "fr-FR", "it-IT", "nl-NL"], command=lambda x:self.event_callback(self.locale_dropdown.get()),variable=self.locale_dropdown_var)
+        self.locale_dropdown_var = customtkinter.StringVar(value="en-GB")
+        self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=[k for (k,v) in self.locale_data.items()], command=lambda x:self.event_callback(self.locale_dropdown.get()),variable=self.locale_dropdown_var)
         self.locale_dropdown.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.locale_dropdown.set(self.data["settings"]["locale"])
         
@@ -248,10 +249,10 @@ class App(customtkinter.CTk):
         self.tags_entry.grid(row=12, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.tags_entry.insert(0, self.data["settings"]["tags"])
 
-        self.prefferedSendTime_checkbox_var = customtkinter.StringVar(value="on")
+        self.prefferedSendTime_checkbox_var = customtkinter.StringVar(value=self.data["settings"]["preffered_sendtime_checkbox"])
         self.prefferedSendTime_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Preffered Send Time", command=lambda:self.event_callback("set preffered send time"), variable=self.prefferedSendTime_checkbox_var, onvalue="on", offvalue="off")
         self.prefferedSendTime_checkbox.grid(row=13, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-        self.prefferedSendTime_checkbox._variable.set(self.data["settings"]["preffered_sendtime_checkbox"])
+        # self.prefferedSendTime_checkbox._variable.set(self.data["settings"]["preffered_sendtime_checkbox"])
 
         self.prefferedSendTime_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Preffered Send Time")
         self.prefferedSendTime_entry.grid(row=14, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
@@ -272,12 +273,10 @@ class App(customtkinter.CTk):
 
         self.get_values()
         self.configparser.set_config(**self.data)
-
-        if str == "generate email":
-            self.build_payload()
+        self.build_payload()    
 
         if str == "send email":
-            self.email.send_email(self.data)
+            self.build_payload()
    
     def build_payload(self):
 

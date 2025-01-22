@@ -18,7 +18,6 @@ class PayloadBuilder:
 
     def build(self):
 
-        
         """Constructs the final payload."""
         if self.payload_type == PayloadType.SERVICE_REVIEW:
             return self.build_service_review_payload()
@@ -66,32 +65,36 @@ class PayloadData:
     def __init__(self, **kwargs):
 
         # service reviews
-        
-        self.replyTo = kwargs.get('replyTo',"hrh@trustpilot.com")
-        self.locale = kwargs.get('locale',"en-US")
+        self.email_data = kwargs.get('emails')
+
+        self.replyTo = kwargs.get('replyTo',None)
+        self.locale = kwargs.get('locale',None)
         self.locationId = kwargs.get('locationId',None)
-        self.senderName = kwargs.get('senderName',"john doe")
-        self.senderEmail = kwargs.get('senderEmail',"noreply.invitations@trustpilot.com")
-        self.referenceId = kwargs.get('referenceId',f"test{self.generate_random_string(12)}")
-        self.recipientName = kwargs.get('recipientName',f"John{self.generate_random_string(12)}")
-        self.recipientEmail = kwargs.get('recipientEmail',f"john_doe{self.generate_random_string(12)}@gmail.com")
-        self.templateId = kwargs.get('templateId',"529c0abfefb96008b894ad02")
-        self.prefferedSendtimeServiceReview = kwargs.get('prefferedSendTimeServiceReview',0)
-        self.redirectURI = kwargs.get('redirectUri',"http://trustpilot.com")
-        self.tags = kwargs.get('tags',["tag1","tag2"])
+        self.senderName = kwargs.get('senderName',None)
+        self.senderEmail = kwargs.get('senderEmail',None)
+        self.referenceId = kwargs.get('referenceId',None)
+        self.recipientName = self.email_data.get('recipient_name',None)
+        self.recipientEmail = self.email_data.get('recipient_email',None)
+        self.templateId = kwargs.get('templateId',None)
+        self.prefferedSendtimeServiceReview = kwargs.get('prefferedSendTimeServiceReview',None)
+        self.redirectURI = kwargs.get('redirectUri',None)
+        self.tags = kwargs.get('tags',None)
 
         # product reviews
 
         self.productReviewTemplateId = kwargs.get('productReviewTemplate','5c17c7ebb565bb0001046fbd')
         self.prefferedSendTimeProductReview = kwargs.get('prefferedSendTimeProductReview',0)
 
+        # self.payload_data: dict = map()
+
     def generate_random_string(self,length):
             """Generates a random alphanumeric string of the given length."""
             return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
-    def get_payload_data(self):
+    def get_payload_data(self) -> dict:
 
-        payload_data = {
+        """Returns the payload data."""
+        self.payload_data = {
         "replyTo": self.replyTo,
         "locale": self.locale,
         "senderName": self.senderName,
@@ -101,14 +104,14 @@ class PayloadData:
         "locationId": self.locationId,
         "recipientEmail" : self.recipientEmail,
         "templateId": self.templateId,
-        "preferredSendTime": HelperFunctions(self.prefferedSendtimeServiceReview).get_preferred_send_time(),
+        "preferredSendTime": self.prefferedSendtimeServiceReview, #HelperFunctions(self.prefferedSendtimeServiceReview).get_preferred_send_time(),
         "redirectURI": self.redirectURI,
         "tags": self.tags
         
         }
         
-        return payload_data
-    
+        return {k: v for k, v in self.payload_data.items() if v is not None}
+
     def get_products_payload_data(self):
         payload_data = {
 
