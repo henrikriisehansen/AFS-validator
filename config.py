@@ -10,63 +10,48 @@ class ConfigParser():
         if not os.path.exists('config.ini'):
 
             self.config.add_section('emails')
-            self.config.set('emails','afsEmail','domain+1234@invite.trustpilot.com')
-            self.config.set('emails','recipientEmail','recipientEmail@gmail.com')
-            self.config.set('emails','recipientName','recipientName')
-            self.config.set('emails','emailSubject','test email subject')
+            self.config.set('emails','afs_email','domain+1234@invite.trustpilot.com')
+            self.config.set('emails','recipient_email','recipientEmail@gmail.com')
+            self.config.set('emails','recipient_name','recipientName')
+            self.config.set('emails','email_subject','test email subject')
 
             self.config.add_section('smtp')
-            self.config.set('smtp','smtpServer','smtp.gmail.com')
-            self.config.set('smtp','smtpPort','587')
-            self.config.set('smtp','smtpPassword','password')
-            self.config.set('smtp','smtpSenderEmail','senderEmail@gmail.com')
+            self.config.set('smtp','smtp_server','smtp.gmail.com')
+            self.config.set('smtp','smtp_port','587')
+            self.config.set('smtp','smtp_password','password')
+            self.config.set('smtp','smtp_sender_email','senderEmail@gmail.com')
 
             self.config.add_section('settings')
-            self.config.set('settings','invitationType','Service Review')
-            self.config.set('settings','sendAfsDirectCheckBox','off')
-            self.config.set('settings','localeCheckBox','off')
+            self.config.set('settings','invitation_type','Service Review')
+            self.config.set('settings','send_afs_direct','off')
+            self.config.set('settings','locale_checkbox','off')
             self.config.set('settings','locale','en-US')
-            self.config.set('settings','templateCheckBox','off')
-            self.config.set('settings','template','1234567')
+            self.config.set('settings','template_checkbox','off')
+            self.config.set('settings','template','English - Service reviews')
             self.config.set('settings','sku','1234,12345')
-            self.config.set('settings','skuCheckBox','off')
-            self.config.set('settings','locationIdCheckBox','off')
-            self.config.set('settings','locationId','12345')
+            self.config.set('settings','sku_checkbox','off')
+            self.config.set('settings','location_id_checkbox','off')
+            self.config.set('settings','location_id','12345')
             self.config.set('settings','tags','testTag,testtag2')
-            self.config.set('settings','prefferedSendTimeCheckBox','off')
-            self.config.set('settings','prefferedSendTime','08:00')
-            self.config.set('settings','productReviewInvitationPrefferedSendTimeCheckBox','off')
-            self.config.set('settings','productReviewInvitationPrefferedSendTime','08:00')
+            self.config.set('settings','preffered_sendtime_checkbox','off')
+            self.config.set('settings','preffered_send_time','0')
+            self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
+            self.config.set('settings','product_review_invitation_preffered_sendtime','o')
            
-
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)
         
         self.config.read('config.ini')
-       
-    def get_config(self) -> configparser.ConfigParser:
-
-        # print({s:dict(self.config.items(s)) for s in self.config.sections()})
-        return  self.config
     
     def _get_config(self) -> dict:
         return {s:dict(self.config.items(s)) for s in self.config.sections()}
     
-    def set_config(self,interface) -> None:
+    def set_config(self,**kwargs) -> None:
         
-        self.config.set('emails','afsEmail',interface.afs_email_Entry.get())
-        self.config.set('emails','recipientEmail',interface.reciepent_email_Entry.get())
-
-        self.config.set('smtp','smtpServer',interface.smtp_server_entry.get())
-        self.config.set('smtp','smtpPort',interface.smtp_port_entry.get())
-        self.config.set('smtp','smtpPassword',interface.smtp_password_entry.get())
-        self.config.set('smtp','smtpSenderEmail',interface.sender_email_Entry.get())
-
-        self.config.set('settings','skuCheckBox',interface.sku_checkbox_var.get())
-        self.config.set('settings','locationIdCheckBox',interface.location_id_checkbox_var.get())
-        self.config.set('settings','tags',interface.tags_entry.get())
-        self.config.set('settings','prefferedSendTimeCheckBox',interface.prefferedSendTime_checkbox_var.get())
-        self.config.set('settings','productReviewInvitationPrefferedSendTimeCheckBox',interface.productReviewInvitationPrefferedSendTime_checkbox_var.get())
+        for s, v in kwargs.items():
+            for key, value in v.items():
+                self.config.set(s, key, value)
+                # print(f"section: {s} key: {key} value: {value}")
 
         with open('config.ini', 'w') as configfile:
             self.config.write(configfile)
