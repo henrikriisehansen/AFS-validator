@@ -66,13 +66,14 @@ class PayloadData:
 
         # service reviews
         self.email_data = kwargs.get('emails')
+        self.settings_data = kwargs.get('settings')
 
         self.replyTo = kwargs.get('replyTo',None)
         self.locale = kwargs.get('locale',None)
         self.locationId = kwargs.get('locationId',None)
         self.senderName = kwargs.get('senderName',None)
         self.senderEmail = kwargs.get('senderEmail',None)
-        self.referenceId = kwargs.get('referenceId',None)
+        self.referenceId = self.settings_data.get('reference_id',None)
         self.recipientName = self.email_data.get('recipient_name',None)
         self.recipientEmail = self.email_data.get('recipient_email',None)
         self.templateId = kwargs.get('templateId',None)

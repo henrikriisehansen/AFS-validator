@@ -37,6 +37,7 @@ class ConfigParser():
             self.config.set('settings','preffered_send_time','0')
             self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
             self.config.set('settings','product_review_invitation_preffered_sendtime','0')
+            self.config.set('settings','reference_id','1234')
            
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)
