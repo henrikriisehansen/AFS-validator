@@ -52,7 +52,6 @@ class ConfigParser():
         for s, v in kwargs.items():
             for key, value in v.items():
                 self.config.set(s, key, value)
-                # print(f"section: {s} key: {key} value: {value}")
 
         with open('config.ini', 'w') as configfile:
             self.config.write(configfile)
