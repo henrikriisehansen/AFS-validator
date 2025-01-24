@@ -32,6 +32,7 @@ class PayloadBuilder:
            
         if isinstance(self.invitation, Product_review_payload):
             payload = vars(self.base_payload)
+            payload.update(vars(self.invitation))
         
         if isinstance(self.invitation, Product_review_sku_payload):
             payload = vars(self.base_payload)
