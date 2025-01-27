@@ -12,12 +12,14 @@ class App(customtkinter.CTk):
         
         super().__init__()
 
-        ################################################################
-
+        # Initialize configuration and locale data
         self.configparser:ConfigParser = ConfigParser()
         self.data:dict = self.configparser._get_config()
         self.locale_data:dict = LocaleParser().get_locale()
+        # self._data:dict = self.configparser._get_config()
 
+        # print(pformat(self.data))
+        # Frame padding and styling
         self.frame_padx:int = 8
         self.frame_pady:int = 8
         self.frame_corner_radius:int = 8
@@ -25,8 +27,10 @@ class App(customtkinter.CTk):
         self.element_padx:int = 8
         self.element_pady:int = 8
 
-        ################################################################
+        # Widget elements dictionary
+        self.widget_elements:dict[str,object] = {}
 
+        # Initialize email object and set window properties
         self.email:Email = Email()
         self.title("AFS - generator")
         self.geometry("1000x600")
@@ -35,30 +39,34 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure((0, 1, 2), weight=1)
         self.grid_rowconfigure((0), weight=1)
 
-        #column 0
-
+        # Column 0: Email settings
         self.set_email_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.set_email_frame.grid(row=0, column=0, sticky="news")
         self.set_email_frame.grid_rowconfigure((0, 1, 2), weight=1)
         self.set_email_frame.grid_columnconfigure((0), weight=1)
 
+        # Email entry frame
         self.set_email_frame_entry = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
         self.set_email_frame_entry.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.set_email_frame_entry.grid_rowconfigure((0), weight=1)
         self.set_email_frame_entry.grid_columnconfigure((0), weight=1)
 
+        # Inner frame for email entry
         self.email_frame_entry_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_entry,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_frame_entry_inner_frame.grid(row=0, column=0, sticky="new")
         self.email_frame_entry_inner_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
         self.email_frame_entry_inner_frame.grid_columnconfigure((0), weight=1)
 
+        # AFS email label and entry
         self.afs_email_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="AFS email:", fg_color="transparent", font=self.font)
         self.afs_email_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.afs_email_Entry = customtkinter.CTkEntry(master=self.email_frame_entry_inner_frame, placeholder_text="AFS email")
         self.afs_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.afs_email_Entry.insert(0, self.data['emails']['afs_email'])
+        self.widget_elements["afs_email"] = self.afs_email_Entry
 
+        # Invitation type combobox
         self.combobox_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="Select invitation type:", fg_color="transparent", font=self.font)
         self.combobox_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
@@ -67,18 +75,21 @@ class App(customtkinter.CTk):
                                                   command=lambda x :self.event_callback(self.combobox.get()), variable=self.combobox_var)
         self.combobox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.combobox.set(self.data["settings"]["invitation_type"])
+        self.widget_elements["invitation_type"] = self.combobox
         
+        # SMTP settings frame
         self.set_email_frame_smtp = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
         self.set_email_frame_smtp.grid(row=1, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.set_email_frame_smtp.grid_rowconfigure((0), weight=1)
         self.set_email_frame_smtp.grid_columnconfigure((0), weight=1)
 
+        # Scrollable frame for SMTP settings
         self.email_frame_smtp_scrollbar = customtkinter.CTkScrollableFrame(master=self.set_email_frame_smtp, corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_frame_smtp_scrollbar.grid(row=0, column=0, rowspan=8, sticky="nsew")
         self.email_frame_smtp_scrollbar.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
         self.email_frame_smtp_scrollbar.grid_columnconfigure((0), weight=1)
 
-
+        # SMTP settings labels and entries
         self.smtp_label = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="SMTP:", fg_color="transparent", font=self.header_font)
         self.smtp_label.grid(row=0, column=0, padx=self.element_padx, sticky="wn")
 
@@ -88,6 +99,7 @@ class App(customtkinter.CTk):
         self.sender_email_Entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="Sender email")
         self.sender_email_Entry.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.sender_email_Entry.insert(0, self.data['smtp']['smtp_sender_email'])
+        self.widget_elements["sender_email"] = self.sender_email_Entry
 
         self.smtp_server = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_server:", fg_color="transparent", font=self.font)
         self.smtp_server.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
@@ -95,6 +107,7 @@ class App(customtkinter.CTk):
         self.smtp_server_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_server")
         self.smtp_server_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.smtp_server_entry.insert(0, self.data['smtp']['smtp_server'])
+        self.widget_elements["smtp_server"] = self.smtp_server_entry
 
         self.smtp_port = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_port:", fg_color="transparent", font=self.font)
         self.smtp_port.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
@@ -102,6 +115,7 @@ class App(customtkinter.CTk):
         self.smtp_port_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_port")
         self.smtp_port_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.smtp_port_entry.insert(0, self.data["smtp"]["smtp_port"])
+        self.widget_elements["smtp_port"] = self.smtp_port_entry
 
         self.smtp_password_label = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_password:", fg_color="transparent", font=self.font)
         self.smtp_password_label.grid(row=7, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
@@ -109,46 +123,53 @@ class App(customtkinter.CTk):
         self.smtp_password_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_password")
         self.smtp_password_entry.grid(row=8, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.smtp_password_entry.insert(0, self.data["smtp"]["smtp_password"])
+        self.widget_elements["smtp_password"] = self.smtp_password_entry
 
+        # Buttons frame
         self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
         self.set_email_frame_buttons.grid(row=2, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="sewn")
         self.set_email_frame_buttons.grid_rowconfigure((0), weight=1)
         self.set_email_frame_buttons.grid_columnconfigure((0), weight=1)
 
+        # Inner frame for buttons
         self.email_frame_buttons_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_buttons,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sew")
         self.email_frame_buttons_inner_frame.grid_rowconfigure((0, 1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
 
+        # Generate and send email buttons
         self.generate_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Generate Email", command=lambda:self.event_callback("generate email"))
         self.generate_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:self.event_callback("send email"))
         self.send_email.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
-        #column 1
-
+        # Column 1: Email content
         self.email_box_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent") 
         self.email_box_frame.grid(row=0, column=1, sticky="nsew")  
         self.email_box_frame.grid_rowconfigure((0, 1), weight=1)
         self.email_box_frame.grid_columnconfigure((0), weight=1)
 
+        # Upper frame for email content
         self.email_box_upper_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius)
         self.email_box_upper_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.email_box_upper_frame.grid_rowconfigure((0), weight=1)
         self.email_box_upper_frame.grid_columnconfigure((0), weight=1)
 
+        # Inner frame for email content
         self.email_box_inner_upper_frame = customtkinter.CTkFrame(master=self.email_box_upper_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_box_inner_upper_frame.grid(row=0, column=0, sticky="new")
         self.email_box_inner_upper_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
         self.email_box_inner_upper_frame.grid_columnconfigure((0), weight=1)
 
+        # Email subject and recipient entries
         self.subject_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="Email Subject:", fg_color="transparent", font=self.font)
         self.subject_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.subject = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="Email Subject")
         self.subject.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
         self.subject.insert(0, self.data["emails"]["email_subject"])
+        self.widget_elements["subject"] = self.subject
 
         self.to_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="To Email:", fg_color="transparent", font=self.font)
         self.to_email_entry_label.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
@@ -156,52 +177,41 @@ class App(customtkinter.CTk):
         self.to_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="To Email")
         self.to_email_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
         self.to_email_entry.insert(0, self.data['emails']['recipient_email'])
+        self.widget_elements["to_email"] = self.to_email_entry
 
         self.BCC_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="BCC Email:", fg_color="transparent", font=self.font)
         self.BCC_email_entry_label.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.BCC_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="BCC Email")
         self.BCC_email_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.BCC_email_entry.insert(0, self.data['emails']['bcc_email'])
+        self.widget_elements["bcc_email"] = self.BCC_email_entry
 
+        # Frame for email body
         self.email_body_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_body_frame.grid(row=1, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="nsew")
         self.email_body_frame.grid_rowconfigure((0), weight=1)
         self.email_body_frame.grid_columnconfigure((0), weight=1)
 
-        # self.email_body_label = customtkinter.CTkLabel(master=self.email_body_frame, text="Email Body:", fg_color="transparent", font=self.font)
-        # self.email_body_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
-
+        # Email body text box
         self.email_body = customtkinter.CTkTextbox(master=self.email_body_frame)
         self.email_body.grid(row=0, column=0, sticky="ewsn")
 
-        #column 2
-
+        # Column 2: Settings
         self.settings_box = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.settings_box.grid(row=0, column=2, sticky="nsew")
         self.settings_box.grid_rowconfigure((0), weight=1)
         self.settings_box.grid_columnconfigure((0), weight=1)
 
+        # Scrollable frame for settings
         self.settings_box_frame = customtkinter.CTkScrollableFrame(master=self.settings_box,corner_radius=self.frame_corner_radius)
         self.settings_box_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.settings_box_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), weight=1)
         self.settings_box_frame.grid_columnconfigure((0), weight=1)
 
-        # self.reciepent_email_label = customtkinter.CTkLabel(master=self.settings_box_frame, text="Recienpent email:", fg_color="transparent", font=self.font)
-        # self.reciepent_email_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        # self.reciepent_email_Entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Recienpent email")
-        # self.reciepent_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.reciepent_email_Entry.insert(0, self.data["emails"]["recipient_email"])
-
-        # self.reciepent_name_label = customtkinter.CTkLabel(master=self.settings_box_frame, text="Recienpent name:", fg_color="transparent", font=self.font)
-        # self.reciepent_name_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-        
-        # self.reciepent_name_Entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="Recienpent name")
-        # self.reciepent_name_Entry.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.reciepent_name_Entry.insert(0, self.data["emails"]["recipient_name"])
-        
+        # Various settings checkboxes and entries
         self.send_afs_directly_checkbox_var = customtkinter.StringVar(value="on")
-        self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=lambda:self.event_callback("send afs direct"), variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
+        self.send_afs_directly_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Send AFS Directly", command=lambda:self.event_callback(**{"state":self.send_afs_directly_checkbox.get(),"entry":None}), variable=self.send_afs_directly_checkbox_var, onvalue="on", offvalue="off")
         self.send_afs_directly_checkbox.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
         self.send_afs_directly_checkbox._variable.set(self.data["settings"]["send_afs_direct"])
         self.send_afs_directly_checkbox.grid_remove
@@ -229,14 +239,14 @@ class App(customtkinter.CTk):
         self.template_dropdown.grid_forget()
 
         self.sku_checkbox_var = customtkinter.StringVar(value="on")
-        self.sku_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set SKU", command=lambda:self.event_callback(self.sku_checkbox.get()), variable=self.sku_checkbox_var, onvalue="on", offvalue="off")
+        self.sku_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set SKU", command=lambda:self.event_callback(**{"state":self.sku_checkbox.get(),"entry":self.sku_entry}), variable=self.sku_checkbox_var, onvalue="on", offvalue="off")
         self.sku_checkbox.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
         self.sku_checkbox._variable.set(self.data["settings"]["sku_checkbox"])
         
         self.sku_entry = customtkinter.CTkEntry(master=self.settings_box_frame, placeholder_text="SKU values")
         self.sku_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.sku_entry.insert(0, self.data["settings"]["sku"])
-        self.sku_checkbox.setvar(name="value", value="sku")
+        self.sku_entry.grid_remove()
 
         self.location_id_checkbox_var = customtkinter.StringVar(value="on")
         self.location_id_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Location ID", command=lambda:self.event_callback("set location id"), variable=self.location_id_checkbox_var, onvalue="on", offvalue="off")
@@ -276,25 +286,20 @@ class App(customtkinter.CTk):
         self.productReviewInvitationPrefferedSendTime_entry.insert(0, self.data["settings"]["product_review_invitation_preffered_sendtime"])
         self.productReviewInvitationPrefferedSendTime_entry.grid_forget()
         
-        self.settings_entry_elements:dict = {
-            "sku":self.sku_entry,
-            "sku_checkbox":self.sku_checkbox
-        }
-
         self.build_payload()
 
-    def event_callback(self,str:str,**kwargs):
+    def event_callback(self,**kwargs):
+        
+        if kwargs.get("state") == "on" and kwargs.get('entry') != None:
+            kwargs["entry"].grid() 
+
+        if kwargs.get("state") == "off" and kwargs.get('entry') != None:
+            kwargs["entry"].grid_remove()
         
         self.get_values()
         self.configparser.set_config(**self.data)
         self.build_payload()
-
-        for x,y in self.settings_entry_elements.items():
-            if y.get() == 'on':
-                self.settings_entry_elements.get( y.getvar("value")).grid()
-            else:
-                self.settings_entry_elements.get( y.getvar("value")).grid_remove()
-        
+       
     def build_payload(self):
 
         data = self.data['settings'] | self.data['emails']

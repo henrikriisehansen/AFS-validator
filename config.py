@@ -14,6 +14,7 @@ class ConfigParser():
             self.config.set('emails','recipient_email','recipientEmail@gmail.com')
             self.config.set('emails','recipient_name','recipientName')
             self.config.set('emails','email_subject','test email subject')
+            self.config.set('emails','bcc_email','anotherEmail@gmail.com')
 
             self.config.add_section('smtp')
             self.config.set('smtp','smtp_server','smtp.gmail.com')
@@ -46,6 +47,14 @@ class ConfigParser():
     
     def _get_config(self) -> dict:
         return {s:dict(self.config.items(s)) for s in self.config.sections()}
+    
+    def get_config(self) -> dict:
+
+        config_data = {s:dict(self.config.items(s)) for s in self.config.sections()}
+        
+        data = config_data['emails'] | config_data['settings'] | config_data['smtp']
+
+        return data
     
     def set_config(self,**kwargs) -> None:
         
