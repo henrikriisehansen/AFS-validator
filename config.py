@@ -10,9 +10,7 @@ class ConfigParser():
         if not os.path.exists('config.ini'):
 
             self.config.add_section('emails')
-            self.config.set('emails','afs_email','')
-            self.config.set('emails','recipient_email','recipientEmail@gmail.com')
-            self.config.set('emails','recipient_name','recipientName')
+            self.config.set('emails','afs_email','domain@trustpilot.com')
             self.config.set('emails','email_subject','test email subject')
             self.config.set('emails','bcc_email','anotherEmail@gmail.com')
 
@@ -23,6 +21,13 @@ class ConfigParser():
             self.config.set('smtp','smtp_sender_email','senderEmail@gmail.com')
 
             self.config.add_section('settings')
+            self.config.set('settings','recipient_email_checkbox','on')
+            self.config.set('settings','recipient_email','recipientEmail@gmail.com')
+            self.config.set('settings','reference_id_checkbox','on')
+            self.config.set('settings','reference_id','1234')
+            self.config.set('settings','recipient_name_checkbox','on')
+            self.config.set('settings','recipient_name','recipientName')
+            self.config.set('settings','reference_id','1234')
             self.config.set('settings','invitation_type','Service Review')
             self.config.set('settings','send_afs_direct','off')
             self.config.set('settings','locale_checkbox','off')
@@ -38,7 +43,7 @@ class ConfigParser():
             self.config.set('settings','preffered_send_time','0')
             self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
             self.config.set('settings','product_review_invitation_preffered_sendtime','0')
-            self.config.set('settings','reference_id','1234')
+            
            
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)
@@ -47,14 +52,6 @@ class ConfigParser():
     
     def _get_config(self) -> dict:
         return {s:dict(self.config.items(s)) for s in self.config.sections()}
-    
-    def get_config(self) -> dict:
-
-        config_data = {s:dict(self.config.items(s)) for s in self.config.sections()}
-        
-        data = config_data['emails'] | config_data['settings'] | config_data['smtp']
-
-        return data
     
     def set_config(self,**kwargs) -> None:
         

@@ -68,8 +68,8 @@ class Product_review_sku_payload:
 class BasePayload:
    """Base class for all payload types."""
    def __init__(self, **kwargs):
-        
-        self.replyTo = kwargs.get('replyTo',None)
+               
+        self.replyTo = kwargs.get('replyTo',None) if kwargs.get('replyto') == 'on' else None
         self.locale = kwargs.get('locale', None) if kwargs.get('locale_checkbox') == 'on' else None
 
         self.locationId = kwargs.get('location_id',None) if kwargs.get('location_id_checkbox') == 'on' else None
