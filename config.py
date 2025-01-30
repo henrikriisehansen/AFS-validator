@@ -54,6 +54,7 @@ class ConfigParser():
     
     def set_config(self,**kwargs) -> None:
         
+       
         for s, v in kwargs.items():
             for key, value in v.items():
                 self.config.set(s, key, value)

@@ -72,7 +72,7 @@ class App(customtkinter.CTk):
         self.combobox_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
         self.combobox_var = customtkinter.StringVar(value="Service Review")
-        self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service Review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
+        self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
                                                   command=lambda x :self.event_callback(**{"state":self.combobox.get()}), variable=self.combobox_var)
         self.combobox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
         self.combobox.set(self.data["emails"]["invitation_type"])
@@ -289,8 +289,6 @@ class App(customtkinter.CTk):
 
     def event_callback(self,**kwargs):
 
-        
-        
         if kwargs.get("state") == "on" and kwargs.get('entry') != None:
             kwargs["entry"].grid() 
 
@@ -304,16 +302,22 @@ class App(customtkinter.CTk):
             print("Sending email")
             return
         
-        # Create the payload
+        # Create the payload and update the state
         self.get_values()
-        self.configparser.set_config(**self.data)
         self.build_payload()
+        self.configparser.set_config(**self.data)
+        
        
     def build_payload(self):
 
-        # merge the settings and email data
-        data = self.data['settings'] | self.data['emails']
-       
+        # merge the settings and email and smtp data
+        data = self.data_settings | self.data_emails | self.data_smtp
+
+        # update the data dictionary with the new merged data
+        self.data["settings"] = self.data_settings
+        self.data["emails"] = self.data_emails
+        self.data["smtp"] = self.data_smtp
+
         # build the payload
         self.payload = PayloadBuilder(self.get_payload_type(),**data).build()
         self.email_body.delete(0.0, "end")
@@ -323,49 +327,20 @@ class App(customtkinter.CTk):
 
         invitation_type:dict = {
             "service review": PayloadType.SERVICE_REVIEW,
-            "Service & Product Review(add/update Product Review)": PayloadType.SERVICE_AND_PRODUCT_REVIEW,
-            "Service & Product review using SKU": PayloadType.SERVICE_AND_PRODUCT_REVIEW_SKU
+            "service & product review(add/update product review)": PayloadType.SERVICE_AND_PRODUCT_REVIEW,
+            "service & product review using sku": PayloadType.SERVICE_AND_PRODUCT_REVIEW_SKU
         }
 
-        return invitation_type[self.combobox.get()]
+        return invitation_type[str(self.combobox.get()).lower()]
 
     def get_values(self):
         
-        elements = self.checkboxes | self.entryboxes
+        settingsElements = self.checkboxes | self.entryboxes
 
-        for key,value in elements.items():
-           print(key,value)
-        # self.data["emails"]["recipient_email"] = self.recipient_email_entry.get()
-        # self.data["emails"]["afs_email"] = self.afs_email_Entry.get()
-        # self.data["emails"]["email_subject"] = self.subject.get()
-        
+        for key,value in settingsElements.items():
 
-        # self.data["smtp"]["smtp_sender_email"] = self.sender_email_Entry.get()
-        # self.data["smtp"]["smtp_server"] = self.smtp_server_entry.get()
-        # self.data["smtp"]["smtp_port"] = self.smtp_port_entry.get()
-        # self.data["smtp"]["smtp_password"] = self.smtp_password_entry.get()
-        
-        # self.data["settings"]["recipient_name_checkbox"] = self.reciepent_name_checkbox.get()
-        # self.data["settings"]["recipient_name"] = self.reciepent_name_Entry.get()
-        # self.data["settings"]["recipient_email_checkbox"] = self.reciepent_email_checkbox.get()
-        # self.data["settings"]["recipient_email"] = self.recipient_email_entry.get()
-        
-        # self.data["settings"]["invitation_type"] = self.combobox.get()
-        # self.data["settings"]["send_afs_direct"] = self.send_afs_directly_checkbox.get()
-        # self.data["settings"]["locale_checkbox"] = self.locale_checkbox.get()
-        # self.data["settings"]["template_checkbox"] = self.template_checkbox.get()
-        # self.data["settings"]["template"] = self.template_dropdown.get()
-        # self.data["settings"]["locale_checkbox"] = self.locale_checkbox.get()
-        # self.data["settings"]["locale"] = self.locale_dropdown.get()
-        # self.data["settings"]["sku_checkbox"] = self.sku_checkbox.get()
-        # self.data["settings"]["sku"] = self.sku_entry.get()
-        # self.data["settings"]["location_id_checkbox"] = self.location_id_checkbox.get()
-        # self.data["settings"]["location_id"] = self.location_id_entry.get()
-        # self.data["settings"]["tags"] = self.tags_entry.get()
-        # self.data["settings"]["preffered_sendtime_checkbox"] = self.prefferedSendTime_checkbox.get()
-        # self.data["settings"]["preffered_send_time"] = self.prefferedSendTime_entry.get()
-        # self.data["settings"]["product_review_invitation_preffered_sendtime_checkbox"] = self.productReviewInvitationPrefferedSendTime_checkbox.get()
-        # self.data["settings"]["product_review_invitation_preffered_sendtime"] = self.productReviewInvitationPrefferedSendTime_entry.get()
+            self.data_settings[key] = value.get()
+            
 
     def generate_html(self, payload):
         # TODO: Implement actual payload generation and rendering here.
