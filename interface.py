@@ -294,41 +294,7 @@ class App(customtkinter.CTk):
                 # check if combobox is visible and update
                 self.comboboxes[key].grid() if self.combobox_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.comboboxes[key].grid_remove()
         
-
-       
-
-        # self.locale_var = customtkinter.StringVar(value="on")
-        # self.locale_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Locale", command=lambda:self.event_callback(**{"state":self.locale_checkbox.get(),"entry":self.locale_dropdown}), variable=self.locale_var, onvalue="on", offvalue="off")
-        # self.locale_checkbox.grid(row=self.settings_int, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-        # self.locale_checkbox._variable.set(self.data_settings.get('locale_checkbox'))
-       
-        # self.settings_int += 1
-
-        # self.locale_dropdown_var = customtkinter.StringVar(value="en-GB")
-        # self.locale_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=[k for (k,v) in self.locale_data.items()], command=lambda x:self.event_callback(**{"state":self.locale_dropdown.get(),"entry":None}),variable=self.locale_dropdown_var)
-        # self.locale_dropdown.grid(row=self.settings_int, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.locale_dropdown.set(self.data_settings.get('locale'))
-        # self.locale_dropdown.grid_remove()
-
-        # self.settings_int += 1
-        
-        # self.template_checkbox_var = customtkinter.StringVar(value="on")
-        # self.template_checkbox = customtkinter.CTkCheckBox(master=self.settings_box_frame, text="Set Template", command=lambda:self.event_callback(**{"state":self.template_checkbox.get(),"entry":self.template_dropdown}), variable=self.template_checkbox_var, onvalue="on", offvalue="off")
-        # self.template_checkbox.grid(row=self.settings_int, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-        # self.template_checkbox._variable.set(self.data["settings"]["template_checkbox"])
-
-        # self.settings_int += 1
-
-        # self.template_dropdown_var = customtkinter.StringVar(value="English - Service reviews")
-        # self.template_dropdown = customtkinter.CTkComboBox(master=self.settings_box_frame, values=["English - Service reviews", "Danish - Service reviews", "German - Service reviews", "Spanish - Service reviews", "French - Service reviews", "Italian - Service reviews", "Dutch - Service reviews"], command=lambda x:self.event_callback(**{"state":self.combobox.get()}), variable=self.template_dropdown_var)
-        # self.template_dropdown.grid(row=self.settings_int, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.template_dropdown.set(self.data["settings"]["template"])
-        # self.template_dropdown.grid_remove()
-
-        # self.settings_int += 1
-
-       
-        
+        # Generate payload and bind parameters
         self.build_payload()
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
@@ -387,6 +353,10 @@ class App(customtkinter.CTk):
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()
+
+        for key,value in self.widget_elements.items():
+
+            self.data_emails[key] = value.get()
             
 
     def generate_html(self, payload):
