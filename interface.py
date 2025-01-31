@@ -382,7 +382,7 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-        settingsElements = self.checkboxes | self.entryboxes
+        settingsElements:dict = self.checkboxes | self.entryboxes | self.combobox_checkboxes | self.comboboxes
 
         for key,value in settingsElements.items():
 

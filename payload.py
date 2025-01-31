@@ -69,21 +69,20 @@ class BasePayload:
     def __init__(self, **kwargs):
 
         for key, value in kwargs.items():
-            
+
             if value == 'on' and self.getPayloadItems(key) is not None:
                 
                 setattr(self, self.getPayloadItems(key), kwargs.get(str(key).replace('checkbox', 'entry')))
                 
 
     def getPayloadItems(self,key):
-       
+              
        data:dict = {
             'recipient_email_checkbox': "recipientEmail",
             'reference_id_checkbox': "referenceId",
             'recipient_name_checkbox': "recipientName",
             'preffered_sendtime_checkbox': "prefferedSendtimeServiceReview",
-            'locale_checkbox': "locale",
-            'locale': "locale",
+            'locale_combobox_checkbox': "locale",
             'productReviewTemplate': "productReviewTemplateId",
             'prefferedSendTimeProductReview': "prefferedSendTimeProductReview",
             'preffered_sendtime': "prefferedSendtimeServiceReview",
