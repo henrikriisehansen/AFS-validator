@@ -29,8 +29,8 @@ class ConfigParser():
             self.config.set('settings','recipient_name_checkbox','on')
             self.config.set('settings','recipient_name_entry','recipientName')
           
-            self.config.set('settings','locale_checkbox','off')
-            self.config.set('settings','locale_entry','en-US')
+            self.config.set('settings','locale_combobox_checkbox','off')
+            self.config.set('settings','locale_combobox_entry','en-US')
             # self.config.set('settings','template_checkbox','off')
             # self.config.set('settings','template','English - Service reviews')
             # self.config.set('settings','sku','1234,12345')

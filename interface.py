@@ -214,9 +214,14 @@ class App(customtkinter.CTk):
 
         self.checkboxes = {}  # Dictionary to store dynamically created checkboxes
         self.entryboxes = {} # Dictionary to store dynamically created entry boxes
+        self.combobox_checkboxes = {} # Dictionary to store dynamically created
+        self.comboboxes = {} # Dictionary to store dynamically created comboboxes
 
         for key, value in self.data_settings.items():
-            if "checkbox" in str(key):  
+
+            # print(key,value)
+        
+            if "checkbox" in str(key) and "combobox" not in str(key):  
                 checkbox_var = customtkinter.StringVar(value=value)
                 
                 # Store checkbox in a dictionary with key as the name
@@ -234,7 +239,7 @@ class App(customtkinter.CTk):
                                         padx=self.element_padx, pady=self.element_pady, sticky="ws")
       
            
-            if "entry" in str(key):
+            if "entry" in str(key) and "combobox" not in str(key):
                 entry_var = customtkinter.StringVar(value=value)
 
                 # Store entry in a dictionary with key as the name
@@ -247,7 +252,47 @@ class App(customtkinter.CTk):
                 # Grid placement
                 self.entryboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+                # check if entry is visible and update
+                self.entryboxes[key].grid() if self.checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.entryboxes[key].grid_remove()
+            
+            if "combobox_checkbox" in str(key):
+                checkbox_var = customtkinter.StringVar(value=value)
+                
+                # Store checkbox in a dictionary with key as the name
+                self.combobox_checkboxes[key] = customtkinter.CTkCheckBox(
+                    master=self.settings_box_frame, 
+                    text=str(key).replace("_", " "), 
+                    command=lambda k=key: self.event_callback(**{"state": self.combobox_checkboxes[k].get(),"entry":self.comboboxes[str(k).replace("checkbox", "entry")]}), 
+                    variable=checkbox_var, 
+                    onvalue="on", 
+                    offvalue="off"
+                )
+                
+                # Grid placement
+                self.combobox_checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                                        padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
+
+            if "combobox_entry" in str(key):
+                combobox_var = customtkinter.StringVar(value=value)
+
+                # Store combobox in a dictionary with key as the name
+                self.comboboxes[key] = customtkinter.CTkComboBox(
+                    master=self.settings_box_frame, 
+                    values=[k for (k,v) in self.locale_data.items()], 
+                    command=lambda x: self.event_callback(**{"state":self.comboboxes[key].get(),"entry":None}), 
+                    variable=combobox_var
+                )
+                
+                # Grid placement
+                self.comboboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                                        padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+                
+                # Set initial value
+                self.comboboxes[key].set(value)
+
+                # check if combobox is visible and update
+                self.comboboxes[key].grid() if self.combobox_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.comboboxes[key].grid_remove()
         
 
        
@@ -289,6 +334,7 @@ class App(customtkinter.CTk):
 
     def event_callback(self,**kwargs):
 
+        # Handle state change for checkboxes and dropdowns
         if kwargs.get("state") == "on" and kwargs.get('entry') != None:
             kwargs["entry"].grid() 
 
@@ -325,6 +371,7 @@ class App(customtkinter.CTk):
 
     def get_payload_type(self):
 
+        # map the payload type
         invitation_type:dict = {
             "service review": PayloadType.SERVICE_REVIEW,
             "service & product review(add/update product review)": PayloadType.SERVICE_AND_PRODUCT_REVIEW,
