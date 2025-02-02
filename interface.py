@@ -4,8 +4,6 @@ from sendEmail import Email
 import json
 from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
-from locale_dict import LocaleParser
-
 
 class App(customtkinter.CTk):
     def __init__(self):
