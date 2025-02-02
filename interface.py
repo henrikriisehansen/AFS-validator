@@ -15,10 +15,11 @@ class App(customtkinter.CTk):
         # Initialize configuration and locale data
         self.configparser:ConfigParser = ConfigParser()
         self.data:dict = self.configparser._get_config()
-        self.locale_data:dict = LocaleParser().get_locale()
-        self.data_settings:dict = self.configparser._get_config()["settings"]
-        self.data_smtp:dict = self.configparser._get_config()["smtp"]
-        self.data_emails:dict = self.configparser._get_config()["emails"]
+        
+        self.data_settings:dict = self.data["settings"]
+        self.data_smtp:dict = self.data["smtp"]
+        self.data_emails:dict = self.data["emails"]
+        self.data_locale:dict = self.data["locale"]
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -214,12 +215,12 @@ class App(customtkinter.CTk):
 
         self.checkboxes = {}  # Dictionary to store dynamically created checkboxes
         self.entryboxes = {} # Dictionary to store dynamically created entry boxes
-        self.combobox_checkboxes = {} # Dictionary to store dynamically created
+        self.combobox_checkboxes = {} # Dictionary to store dynamically created checkboxes
         self.comboboxes = {} # Dictionary to store dynamically created comboboxes
+        self.template_checkboxes = {} # Dictionary to store dynamically created template checkboxes
+        self.template_combobox = {} # Dictionary to store dynamically created template entries
 
         for key, value in self.data_settings.items():
-
-            # print(key,value)
         
             if "checkbox" in str(key) and "combobox" not in str(key):  
                 checkbox_var = customtkinter.StringVar(value=value)
@@ -255,9 +256,11 @@ class App(customtkinter.CTk):
                 # check if entry is visible and update
                 self.entryboxes[key].grid() if self.checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.entryboxes[key].grid_remove()
             
-            if "combobox_checkbox" in str(key):
+            if "locale_combobox_checkbox" in str(key):
                 checkbox_var = customtkinter.StringVar(value=value)
                 
+                
+
                 # Store checkbox in a dictionary with key as the name
                 self.combobox_checkboxes[key] = customtkinter.CTkCheckBox(
                     master=self.settings_box_frame, 
@@ -273,14 +276,14 @@ class App(customtkinter.CTk):
                                         padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
 
-            if "combobox_entry" in str(key):
+            if "locale_combobox_entry" in str(key):
                 combobox_var = customtkinter.StringVar(value=value)
 
                 # Store combobox in a dictionary with key as the name
                 self.comboboxes[key] = customtkinter.CTkComboBox(
                     master=self.settings_box_frame, 
-                    values=[k for (k,v) in self.locale_data.items()], 
-                    command=lambda x: self.event_callback(**{"state":self.comboboxes[key].get(),"entry":None}), 
+                    values=[k for (k,v) in self.data_locale.items() if v is not None], 
+                    command=lambda k: self.event_callback(**{"state":None,"entry":None}), 
                     variable=combobox_var
                 )
                 
@@ -293,10 +296,46 @@ class App(customtkinter.CTk):
 
                 # check if combobox is visible and update
                 self.comboboxes[key].grid() if self.combobox_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.comboboxes[key].grid_remove()
-        
-        # Generate payload and bind parameters
+
+            if "template_combobox_checkbox" in str(key):
+                checkbox_var = customtkinter.StringVar(value=value)
+
+                # Store checkbox in a dictionary with key as the name
+                self.template_checkboxes[key] = customtkinter.CTkCheckBox(
+                    master=self.settings_box_frame,
+                    text=str(key).replace("_", " "),
+                    command=lambda k=key: self.event_callback(**{"state": self.template_checkboxes[k].get(),"entry":self.template_combobox[str(k).replace("checkbox", "entry")]}),
+                    variable=checkbox_var,
+                    onvalue="on",
+                    offvalue="off"
+                )
+
+                # Grid placement
+                self.template_checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0,
+                                                    padx=self.element_padx, pady=self.element_pady, sticky="ws")
+                
+            if "template_combobox_entry" in str(key):
+                
+                
+                # Store combobox in a dictionary with key as the name
+                self.template_combobox[key] = customtkinter.CTkComboBox(
+                    master=self.settings_box_frame,
+                    values=["template_combobox"],
+                    command=lambda k: self.event_callback(**{"state":None,"entry":None}),
+                    variable=customtkinter.StringVar(value=value)
+                )
+
+                # Grid placement
+                self.template_combobox[key].grid(row=list(self.data_settings.keys()).index(key), column=0,
+                                                        padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+                # Set initial value
+                self.template_combobox[key].set(value)
+                # check if combobox is visible and update
+                self.template_combobox[key].grid() if self.template_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.template_combobox[key].grid_remove()
         self.build_payload()
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
+
+        
 
     def event_callback(self,**kwargs):
 
@@ -348,15 +387,11 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-        settingsElements:dict = self.checkboxes | self.entryboxes | self.combobox_checkboxes | self.comboboxes
+        settingsElements = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes
 
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()
-
-        for key,value in self.widget_elements.items():
-
-            self.data_emails[key] = value.get()
             
 
     def generate_html(self, payload):

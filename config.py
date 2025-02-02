@@ -28,22 +28,49 @@ class ConfigParser():
             self.config.set('settings','reference_id_entry','1234')
             self.config.set('settings','recipient_name_checkbox','on')
             self.config.set('settings','recipient_name_entry','recipientName')
-          
             self.config.set('settings','locale_combobox_checkbox','off')
             self.config.set('settings','locale_combobox_entry','en-US')
-            # self.config.set('settings','template_checkbox','off')
-            # self.config.set('settings','template','English - Service reviews')
-            # self.config.set('settings','sku','1234,12345')
-            # self.config.set('settings','sku_checkbox','off')
-            # self.config.set('settings','location_id_checkbox','off')
-            # self.config.set('settings','location_id','12345')
-            # self.config.set('settings','tags','testTag,testtag2')
-            # self.config.set('settings','preffered_sendtime_checkbox','off')
-            # self.config.set('settings','preffered_send_time','0')
-            # self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
-            # self.config.set('settings','product_review_invitation_preffered_sendtime','0')
+            self.config.set('settings','template_combobox_checkbox','off')
+            self.config.set('settings','template_combobox_entry','English - Service reviews')
+            self.config.set('settings','sku_checkbox','off')
+            self.config.set('settings','sku_entry','1234,12345')
+            self.config.set('settings','location_id_checkbox','off')
+            self.config.set('settings','location_id_entry','12345')
+            self.config.set('settings','tags_checkbox','testTag,testtag2')
+            self.config.set('settings','tags_entry','off')
+            self.config.set('settings','preffered_send_time_checkbox','off')
+            self.config.set('settings','preffered_send_time_entry','0')
+            self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
+            self.config.set('settings','product_review_invitation_preffered_sendtime_entry','0')
+
+            self.config.add_section('locale')
+            self.config.set('locale','en-US','www.trustpilot.com')
+            self.config.set('locale','de-AT','at.trustpilot.com')
+            self.config.set('locale','en-AU','au.trustpilot.com')
+            self.config.set('locale','pt-BR','br.trustpilot.com')
+            self.config.set('locale','en-CA','ca.trustpilot.com')
+            self.config.set('locale','de-CH','ch.trustpilot.com')
+            self.config.set('locale','de-DE','de.trustpilot.com')
+            self.config.set('locale','da-DK','dk.trustpilot.com')
+            self.config.set('locale','es-ES','es.trustpilot.com')
+            self.config.set('locale','fi-FI','fi.trustpilot.com')
+            self.config.set('locale','fr-FR','fr.trustpilot.com')
+            self.config.set('locale','fr-BE','fr-be.trustpilot.com')
+            self.config.set('locale','en-IE','ie.trustpilot.com')
+            self.config.set('locale','it-IT','it.trustpilot.com')
+            self.config.set('locale','ja-JP','jp.trustpilot.com')
+            self.config.set('locale','nl-NL','nl.trustpilot.com')
+            self.config.set('locale','nl-BE','nl-be.trustpilot.com')
+            self.config.set('locale','nb-NO','no.trustpilot.com')
+            self.config.set('locale','en-NZ','nz.trustpilot.com')
+            self.config.set('locale','pl-PL','pl.trustpilot.com')
+            self.config.set('locale','pt-PT','pt.trustpilot.com')
+            self.config.set('locale','sv-SE','se.trustpilot.com')
+            self.config.set('locale','en-GB','uk.trustpilot.com')
+
+
             
-           
+            
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)
         
@@ -54,7 +81,6 @@ class ConfigParser():
     
     def set_config(self,**kwargs) -> None:
         
-       
         for s, v in kwargs.items():
             for key, value in v.items():
                 self.config.set(s, key, value)

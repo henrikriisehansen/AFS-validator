@@ -70,35 +70,39 @@ class BasePayload:
 
         for key, value in kwargs.items():
 
+            
             if value == 'on' and self.getPayloadItems(key) is not None:
                 
                 setattr(self, self.getPayloadItems(key), kwargs.get(str(key).replace('checkbox', 'entry')))
                 
 
     def getPayloadItems(self,key):
-              
-       data:dict = {
-            'recipient_email_checkbox': "recipientEmail",
-            'reference_id_checkbox': "referenceId",
-            'recipient_name_checkbox': "recipientName",
-            'preffered_sendtime_checkbox': "prefferedSendtimeServiceReview",
-            'locale_combobox_checkbox': "locale",
-            'productReviewTemplate': "productReviewTemplateId",
-            'prefferedSendTimeProductReview': "prefferedSendTimeProductReview",
-            'preffered_sendtime': "prefferedSendtimeServiceReview",
-            'preffered_sendtime_entry': "prefferedSendtimeServiceReview",
-            'locale_dropdown': "locale",
-            'template_dropdown': "templateId",
-            'productReviewTemplate_dropdown': "productReviewTemplateId",
-            'productReviewTemplate_entry': "productReviewTemplateId",
-            'tags': "tags",
-            'tags_entry': "tags",
-            'productReviewTemplate_entry': "productReviewTemplateId",
-            'productReviewTemplate_dropdown': "productReviewTemplateId",
-            'prefferedSendTimeProductReview_entry': "prefferedSendTimeProductReview"
-       }
+        
+        data:dict = {
+             'recipient_email_checkbox': "recipientEmail",
+                        'reference_id_checkbox': "referenceId",
+                        'recipient_name_checkbox': "recipientName",
+                        'preffered_sendtime_checkbox': "prefferedSendtimeServiceReview",
+                        'locale_combobox_checkbox': "locale",
+                        'productReviewTemplate': "productReviewTemplateId",
+                        'prefferedSendTimeProductReview': "prefferedSendTimeProductReview",
+                        'preffered_sendtime': "prefferedSendtimeServiceReview",
+                        'preffered_sendtime_entry': "prefferedSendtimeServiceReview",
+                        'locale_dropdown': "locale",
+                        'template_dropdown': "templateId",
+                        'productReviewTemplate_dropdown': "productReviewTemplateId",
+                        'productReviewTemplate_entry': "productReviewTemplateId",
+                        'tags': "tags",
+                        'tags_entry': "tags",
+                        'productReviewTemplate_entry': "productReviewTemplateId",
+                        'productReviewTemplate_dropdown': "productReviewTemplateId",
+                        'prefferedSendTimeProductReview_entry': "prefferedSendTimeProductReview"
+            }
+        return data.get(key) 
+                       
+                
 
-       return data.get(key) 
+       
  
       
 
