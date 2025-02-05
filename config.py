@@ -37,7 +37,7 @@ class ConfigParser():
             self.config.set('settings','location_id_checkbox','off')
             self.config.set('settings','location_id_entry','12345')
             self.config.set('settings','tags_checkbox','testTag,testtag2')
-            self.config.set('settings','tags_entry','off')
+            self.config.set('settings','tags_entry','1234,1234')
             self.config.set('settings','preffered_send_time_checkbox','off')
             self.config.set('settings','preffered_send_time_entry','0')
             self.config.set('settings','product_review_invitation_preffered_sendtime_checkbox','off')
@@ -68,7 +68,16 @@ class ConfigParser():
             self.config.set('locale','sv-SE','se.trustpilot.com')
             self.config.set('locale','en-GB','uk.trustpilot.com')
 
-
+            self.config.add_section('payloadKeyMapping')
+            self.config.set('payloadKeyMapping','reference_id_checkbox','referenceId')
+            self.config.set('payloadKeyMapping','recipient_email_checkbox','recipient_email_checkbox')
+            self.config.set('payloadKeyMapping','recipient_name_checkbox','recipientName')
+            self.config.set('payloadKeyMapping','locale_combobox_checkbox','locale')
+            self.config.set('payloadKeyMapping','location_id_checkbox','locationId')
+            self.config.set('payloadKeyMapping','tags_checkbox','tags')
+            self.config.set('payloadKeyMapping','template_combobox_checkbox','templateId')
+            self.config.set('payloadKeyMapping','preffered_send_time_checkbox','preferredSendTime')
+            self.config.set('payloadKeyMapping','product_review_invitation_preffered_sendtime_checkbox','productReviewInvitationPreferredSendTime')
             
             
             with open('config.ini', 'w') as configfile:

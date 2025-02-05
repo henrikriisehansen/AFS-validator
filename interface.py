@@ -18,6 +18,7 @@ class App(customtkinter.CTk):
         self.data_smtp:dict = self.data["smtp"]
         self.data_emails:dict = self.data["emails"]
         self.data_locale:dict = self.data["locale"]
+        self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -368,7 +369,7 @@ class App(customtkinter.CTk):
         self.data["smtp"] = self.data_smtp
 
         # build the payload
-        self.payload = PayloadBuilder(self.get_payload_type(),**data).build()
+        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,**data).build()
         self.email_body.delete(0.0, "end")
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
@@ -385,7 +386,9 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-        settingsElements = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes
+        settingsElements = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
+       
+        
 
         for key,value in settingsElements.items():
 
