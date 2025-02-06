@@ -19,6 +19,7 @@ class App(customtkinter.CTk):
         self.data_emails:dict = self.data["emails"]
         self.data_locale:dict = self.data["locale"]
         self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
+        self.data_templates:dict = self.data["templates"]
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -47,13 +48,13 @@ class App(customtkinter.CTk):
         self.set_email_frame.grid_columnconfigure((0), weight=1)
 
         # Email entry frame
-        self.set_email_frame_entry = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
+        self.set_email_frame_entry = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.set_email_frame_entry.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.set_email_frame_entry.grid_rowconfigure((0), weight=1)
         self.set_email_frame_entry.grid_columnconfigure((0), weight=1)
 
         # Inner frame for email entry
-        self.email_frame_entry_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_entry,corner_radius=self.frame_corner_radius,fg_color="transparent")
+        self.email_frame_entry_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_entry,corner_radius=self.frame_corner_radius)
         self.email_frame_entry_inner_frame.grid(row=0, column=0, sticky="new")
         self.email_frame_entry_inner_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
         self.email_frame_entry_inner_frame.grid_columnconfigure((0), weight=1)
@@ -298,7 +299,7 @@ class App(customtkinter.CTk):
 
             if "template_combobox_checkbox" in str(key):
                 checkbox_var = customtkinter.StringVar(value=value)
-
+                
                 # Store checkbox in a dictionary with key as the name
                 self.template_checkboxes[key] = customtkinter.CTkCheckBox(
                     master=self.settings_box_frame,
@@ -315,13 +316,16 @@ class App(customtkinter.CTk):
                 
             if "template_combobox_entry" in str(key):
                 
+                combobox_var = customtkinter.StringVar(value=value)
                 
+                print(combobox_var.get())
+
                 # Store combobox in a dictionary with key as the name
                 self.template_combobox[key] = customtkinter.CTkComboBox(
                     master=self.settings_box_frame,
-                    values=["template_combobox"],
+                    values=[x for x in self.data_templates.keys()],
                     command=lambda k: self.event_callback(**{"state":None,"entry":None}),
-                    variable=customtkinter.StringVar(value=value)
+                    variable= combobox_var
                 )
 
                 # Grid placement
@@ -369,7 +373,7 @@ class App(customtkinter.CTk):
         self.data["smtp"] = self.data_smtp
 
         # build the payload
-        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,**data).build()
+        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**data).build()
         self.email_body.delete(0.0, "end")
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
@@ -388,8 +392,6 @@ class App(customtkinter.CTk):
         
         settingsElements = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
        
-        
-
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()

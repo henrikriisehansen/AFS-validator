@@ -11,9 +11,9 @@ class PayloadType(Enum):
 class PayloadBuilder:
     """Builds the payload using composition."""
 
-    def __init__(self, payload_type:Enum,payloadKeyMapping:dict,**kwargs):
+    def __init__(self, payload_type:Enum,payloadKeyMapping:dict,templates:dict,**kwargs):
         
-        self.base_payload = BasePayload(payloadKeyMapping,**kwargs)
+        self.base_payload = BasePayload(payloadKeyMapping,templates,**kwargs)
        
         if payload_type == PayloadType.SERVICE_REVIEW:
             self.invitation = Service_review_payload(**kwargs)
@@ -63,34 +63,51 @@ class Product_review_payload:
 
 class Product_review_sku_payload:
     def __init__(self,**kwargs):
-        self.productSkus = str(kwargs.get('sku_entry',None)).split(",")
+        self.productSkus = [v for v in kwargs.get("sku_entry").split(',') if v != '']
 
 class BasePayload:
-    def __init__(self,payloadKeyMapping:dict,**kwargs):
+    def __init__(self,payloadKeyMapping:dict,templates:dict,**kwargs):
 
+        # parse payload key mapping
+        preferred_keys:list = {'preffered_send_time_checkbox', 'product_review_invitation_preffered_sendtime_checkbox'}
+        
+        # filter payload items based on key mapping and value 'on'
+        filteredPayloadItems = {k: v for k,v in kwargs.items() if k in payloadKeyMapping and v == 'on'}
+        
+        # initialize attributes based on payload key mapping and value from filtered items
+        for key in filteredPayloadItems.keys():
+            entry_key = key.replace('checkbox', 'entry')
+            entryValue = kwargs.get(entry_key, '')
 
-        # print(payloadKeyMapping.items())
-        for key, value in kwargs.items():
+            # handle preferred send time
+            if key in preferred_keys:
+                entryValue = HelperFunctions(entryValue).get_preferred_send_time()
 
-            if key in payloadKeyMapping and value == 'on':
+            # handle tags
+            if key == 'tags_checkbox':
+                entryValue = [v for v in entryValue.split(',') if v != '']
 
-                entryValue:str = kwargs.get(str(key).replace('checkbox', 'entry'))
+            # handle template
+            if key == 'template_combobox_checkbox':
+                entryValue = templates.get(entryValue, '')
 
-                if (key == 'preffered_send_time_checkbox' or key == 'product_review_invitation_preffered_sendtime_checkbox') and len(entryValue) <= 7:
-
-                    entryValue = HelperFunctions(entryValue).get_preferred_send_time()
-                    
-                setattr(self, payloadKeyMapping[key], entryValue)
-             
-
+            setattr(self, payloadKeyMapping[key], entryValue)
+          
 class HelperFunctions:
 
-    def __init__(self,days):
-        self.prefferedSendTime = days
+    def __init__(self,days:str):
+        
+        self.prefferedSendTime:str = days
 
     def get_preferred_send_time(self):
         """Calculates the preferred send time."""
 
+        if self.prefferedSendTime == '':
+            self.prefferedSendTime = '0'
+
+        if len(str(self.prefferedSendTime)) > 7:
+            self.prefferedSendTime = self.prefferedSendTime[:7]
+        
         current_date = datetime.now()
         preferred_date = current_date + timedelta(days=int(self.prefferedSendTime))
         return preferred_date.isoformat(timespec="seconds")
