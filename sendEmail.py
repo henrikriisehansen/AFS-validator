@@ -1,6 +1,5 @@
 import smtplib
 import ssl
-import json
 import os
 
 from email.mime.multipart import MIMEMultipart
