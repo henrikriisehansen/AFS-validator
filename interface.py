@@ -298,23 +298,22 @@ class App(customtkinter.CTk):
         if self.settings_window is None or not self.settings_window.winfo_exists():
             self.settings_window = settingsWindow(self)  # create window if its None or destroyed
             self.settings_window.title("Settings")
+            self.settings_window._set(**self.data_smtp)
             self.settings_window.after(100,self.settings_window.lift)
+            self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
             self.settings_window.focus()  # if window exists focus it
 
 
     # call the event callback
     def event_callback(self,**kwargs):
-
+        
         # Handle state change for checkboxes and dropdowns
         if kwargs.get("state") == "on" and kwargs.get('entry') != None:
             kwargs["entry"].grid() 
 
         if kwargs.get("state") == "off" and kwargs.get('entry') != None:
             kwargs["entry"].grid_remove()
-
-        if kwargs.get("generate email"):
-            print("Generating email")
 
         if kwargs.get("send email"):
             print("Sending email")
@@ -354,11 +353,19 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-        settingsElements = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
+        settingsElements:dict = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
        
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()
+
+        if self.settings_window is not None:
+
+            smptElements:dict = self.settings_window._get()
+
+            for key, value in smptElements.items():
+                
+                self.data_smtp[key] = value
             
 
     def generate_html(self, payload):
