@@ -136,15 +136,15 @@ class App(customtkinter.CTk):
         # Inner frame for buttons
         self.email_frame_buttons_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_buttons,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sewn")
-        self.email_frame_buttons_inner_frame.grid_rowconfigure((0), weight=1)
+        self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
 
-        # Generate and send email buttons
-        # self.generate_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Generate Email", command=lambda:self.event_callback(**{"generate email":True}))
-        # self.generate_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        #Generate and send email buttons
+        self.generate_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Generate Email", command=lambda:self.event_callback(**{"generate email":True}))
+        self.generate_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:self.event_callback(**{"send email":True}))
-        self.send_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.send_email.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
         # Column 1: Email content
         self.email_box_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent") 
