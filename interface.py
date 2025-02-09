@@ -1,5 +1,5 @@
 import customtkinter
-from pprint import pformat
+from settings_window import settingsWindow
 from sendEmail import Email
 import json
 from config import ConfigParser
@@ -24,13 +24,15 @@ class App(customtkinter.CTk):
         # Frame padding and styling
         self.frame_padx:int = 8
         self.frame_pady:int = 8
-        self.frame_corner_radius:int = 8
+        self.frame_corner_radius:int = 10
 
         self.element_padx:int = 8
         self.element_pady:int = 8
 
         # Widget elements dictionary
         self.widget_elements:dict[str,object] = {}
+
+        self.settings_window = None
 
         # Initialize email object and set window properties
         self.email:Email = Email()
@@ -79,69 +81,23 @@ class App(customtkinter.CTk):
         self.combobox.set(self.data["emails"]["invitation_type"])
         self.widget_elements["invitation_type"] = self.combobox
         
-        # SMTP settings frame
-        self.set_email_frame_smtp = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
-        self.set_email_frame_smtp.grid(row=1, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
-        self.set_email_frame_smtp.grid_rowconfigure((0), weight=1)
-        self.set_email_frame_smtp.grid_columnconfigure((0), weight=1)
-
-        # Scrollable frame for SMTP settings
-        self.email_frame_smtp_scrollbar = customtkinter.CTkScrollableFrame(master=self.set_email_frame_smtp, corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.email_frame_smtp_scrollbar.grid(row=0, column=0, rowspan=8, sticky="nsew")
-        self.email_frame_smtp_scrollbar.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
-        self.email_frame_smtp_scrollbar.grid_columnconfigure((0), weight=1)
-
-        # SMTP settings labels and entries
-        # self.smtp_label = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="SMTP:", fg_color="transparent", font=self.header_font)
-        # self.smtp_label.grid(row=0, column=0, padx=self.element_padx, sticky="wn")
-
-        # self.sender_email_label = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="Sender email:", fg_color="transparent", font=self.font)
-        # self.sender_email_label.grid(row=1, column=0, padx=self.element_padx, sticky="wn")
-
-        # self.sender_email_Entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="Sender email")
-        # self.sender_email_Entry.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.sender_email_Entry.insert(0, self.data['smtp']['smtp_sender_email'])
-        # self.widget_elements["sender_email"] = self.sender_email_Entry
-
-        # self.smtp_server = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_server:", fg_color="transparent", font=self.font)
-        # self.smtp_server.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
-
-        # self.smtp_server_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_server")
-        # self.smtp_server_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.smtp_server_entry.insert(0, self.data['smtp']['smtp_server'])
-        # self.widget_elements["smtp_server"] = self.smtp_server_entry
-
-        # self.smtp_port = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_port:", fg_color="transparent", font=self.font)
-        # self.smtp_port.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
         
-        # self.smtp_port_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_port")
-        # self.smtp_port_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.smtp_port_entry.insert(0, self.data["smtp"]["smtp_port"])
-        # self.widget_elements["smtp_port"] = self.smtp_port_entry
-
-        # self.smtp_password_label = customtkinter.CTkLabel(master=self.email_frame_smtp_scrollbar, text="smtp_password:", fg_color="transparent", font=self.font)
-        # self.smtp_password_label.grid(row=7, column=0, padx=self.element_padx, pady=self.element_pady, sticky="wn")
-
-        # self.smtp_password_entry = customtkinter.CTkEntry(master=self.email_frame_smtp_scrollbar, placeholder_text="smtp_password")
-        # self.smtp_password_entry.grid(row=8, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        # self.smtp_password_entry.insert(0, self.data["smtp"]["smtp_password"])
-        # self.widget_elements["smtp_password"] = self.smtp_password_entry
 
         # Buttons frame
-        self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius)
+        self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius,fg_color="transparent",bg_color="transparent")
         self.set_email_frame_buttons.grid(row=2, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="sewn")
         self.set_email_frame_buttons.grid_rowconfigure((0), weight=1)
         self.set_email_frame_buttons.grid_columnconfigure((0), weight=1)
 
         # Inner frame for buttons
-        self.email_frame_buttons_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_buttons,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sewn")
+        self.email_frame_buttons_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_buttons,corner_radius=self.frame_corner_radius)
+        self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sew")
         self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
 
         #Generate and send email buttons
-        self.generate_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Generate Email", command=lambda:self.event_callback(**{"generate email":True}))
-        self.generate_email.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:self.open_settings_callback())
+        self.settings.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
 
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:self.event_callback(**{"send email":True}))
         self.send_email.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
@@ -153,13 +109,13 @@ class App(customtkinter.CTk):
         self.email_box_frame.grid_columnconfigure((0), weight=1)
 
         # Upper frame for email content
-        self.email_box_upper_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius)
+        self.email_box_upper_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
         self.email_box_upper_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
         self.email_box_upper_frame.grid_rowconfigure((0), weight=1)
         self.email_box_upper_frame.grid_columnconfigure((0), weight=1)
 
         # Inner frame for email content
-        self.email_box_inner_upper_frame = customtkinter.CTkFrame(master=self.email_box_upper_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
+        self.email_box_inner_upper_frame = customtkinter.CTkFrame(master=self.email_box_upper_frame,corner_radius=self.frame_corner_radius)
         self.email_box_inner_upper_frame.grid(row=0, column=0, sticky="new")
         self.email_box_inner_upper_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
         self.email_box_inner_upper_frame.grid_columnconfigure((0), weight=1)
@@ -318,8 +274,6 @@ class App(customtkinter.CTk):
                 
                 combobox_var = customtkinter.StringVar(value=value)
                 
-                print(combobox_var.get())
-
                 # Store combobox in a dictionary with key as the name
                 self.template_combobox[key] = customtkinter.CTkComboBox(
                     master=self.settings_box_frame,
@@ -338,8 +292,18 @@ class App(customtkinter.CTk):
         self.build_payload()
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
-        
+    
+    def open_settings_callback(self):
+        # open settings window if it's not already opened
+        if self.settings_window is None or not self.settings_window.winfo_exists():
+            self.settings_window = settingsWindow(self)  # create window if its None or destroyed
+            self.settings_window.title("Settings")
+            self.settings_window.after(100,self.settings_window.lift)
+        else:
+            self.settings_window.focus()  # if window exists focus it
 
+
+    # call the event callback
     def event_callback(self,**kwargs):
 
         # Handle state change for checkboxes and dropdowns
