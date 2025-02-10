@@ -32,7 +32,7 @@ class App(customtkinter.CTk):
         # Widget elements dictionary
         self.widget_elements:dict[str,object] = {}
 
-        self.settings_window = None
+        # self.settings_window = None
 
         # Initialize email object and set window properties
         self.email:Email = Email()
@@ -295,17 +295,20 @@ class App(customtkinter.CTk):
     
     def open_settings_callback(self):
         # open settings window if it's not already opened
-        if self.settings_window is None or not self.settings_window.winfo_exists():
+        if not hasattr(self,"settings_window"):
             self.settings_window = settingsWindow(self)  # create window if its None or destroyed
-            self.settings_window.title("Settings")
             self.settings_window._set(**self.data_smtp)
-            self.settings_window.after(100,self.settings_window.lift)
+            
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
             self.settings_window.focus()  # if window exists focus it
 
 
-    # call the event callback
+    def close_settings_callback(self):
+        
+        delattr(self,"settings_window")
+        
+        
     def event_callback(self,**kwargs):
         
         # Handle state change for checkboxes and dropdowns
@@ -353,20 +356,21 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
+
+        print(hasattr(self,"settings_window"))
         settingsElements:dict = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
        
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()
 
-        if self.settings_window is not None:
+        # if hasattr(self,self.settings_window):
 
-            smptElements:dict = self.settings_window._get()
+        #     smptElements:dict = self.settings_window._get()
 
-            for key, value in smptElements.items():
+        #     for key, value in smptElements.items():
                 
-                self.data_smtp[key] = value
-            
+        #         self.data_smtp[key] = value
 
     def generate_html(self, payload):
         # TODO: Implement actual payload generation and rendering here.

@@ -1,15 +1,18 @@
 import customtkinter
 
 class settingsWindow(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self,main, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("400x400")
 
         self.element_padx = 8
         self.element_pady = 8
 
+        self.mainFrame = main
+
         self.font = customtkinter.CTkFont(family="roboto", size=12, weight="bold")
         self.header_font = customtkinter.CTkFont(family="roboto", size=16, weight="bold")
+        self.title("Settings")
         self.grid_columnconfigure((0), weight=1)
         self.grid_rowconfigure((0), weight=1)
 
@@ -39,7 +42,14 @@ class settingsWindow(customtkinter.CTkToplevel):
 
         self.smtp_password_Entry = customtkinter.CTkEntry(master=self, placeholder_text="smtp_password")
         self.smtp_password_Entry.grid(row=8, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
+        
+        self.attributes("-topmost",True) 
 
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
+
+    def close_window(self):
+        self.mainFrame.close_settings_callback() # Close the settings window when the main window is closed.
+        self.destroy()
 
     def _get(self): 
         """
