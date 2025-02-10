@@ -6,18 +6,27 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class Email:
-    def __init__(self):
-        pass
+    def __init__(self,**kwargs) -> None:
+        
+        self.data = kwargs
+        
 
-    def send_email(self, subject, email_from, email_to, email_bcc, htmlBody) -> None:
-        smtp_port = 587
-        smtp_server = "smtp.gmail.com"
-        pswd = os.getenv("APP_PASSWORD")
+    def send_email(self) -> None:
+        
+        smtp_port = self.data['smtp']['smtp_port']
+        smtp_server = self.data['smtp']['smtp_server']
+        smtp_password = self.data['smtp']['smtp_password']
+        smtp_sender_email = self.data['smtp']['smtp_sender_email']
+
+        email_subject = self.data['emails']['subject']
+        email_to = self.data['settings']['recipient_email_entry']
+        email_bcc = self.data['emails']['afs_email']
+    
         simple_email_context = ssl.create_default_context()
 
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = subject
-        msg['From'] = email_from
+        msg['Subject'] =  email_subject
+        msg['From'] = smtp_sender_email
         msg['To'] = email_to
         msg['Bcc'] = email_bcc
 
@@ -27,8 +36,8 @@ class Email:
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls(context=simple_email_context)
-            server.login(email_from, pswd)
-            server.sendmail(email_from, [email_to, email_bcc], msg.as_string())
+            server.login(smtp_sender_email, smtp_password)
+            server.sendmail(smtp_sender_email, [email_to, email_bcc], msg.as_string())
         except Exception as e:
             print(e)
         finally:

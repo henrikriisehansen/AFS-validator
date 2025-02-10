@@ -32,8 +32,6 @@ class App(customtkinter.CTk):
         # Widget elements dictionary
         self.widget_elements:dict[str,object] = {}
 
-        # self.settings_window = None
-
         # Initialize email object and set window properties
         self.email:Email = Email()
         self.title("AFS - generator")
@@ -320,13 +318,17 @@ class App(customtkinter.CTk):
 
         if kwargs.get("send email"):
             print("Sending email")
-            return
+            self.send_smtp_email()
         
         # Create the payload and update the state
         self.get_values()
         self.build_payload()
         self.configparser.set_config(**self.data)
         
+    def send_smtp_email(self):
+
+        email = Email(**self.data)
+        email.send_email()
        
     def build_payload(self):
 
@@ -356,21 +358,23 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-
-        print(hasattr(self,"settings_window"))
         settingsElements:dict = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
        
         for key,value in settingsElements.items():
 
             self.data_settings[key] = value.get()
 
-        # if hasattr(self,self.settings_window):
+        if hasattr(self,"settings_window"):
 
-        #     smptElements:dict = self.settings_window._get()
+            smptElements:dict = self.settings_window._get()
 
-        #     for key, value in smptElements.items():
+            for key, value in smptElements.items():
                 
-        #         self.data_smtp[key] = value
+                self.data_smtp[key] = value
+
+        for key,value in self.widget_elements.items():
+
+            self.data_emails[key] = value.get()
 
     def generate_html(self, payload):
         # TODO: Implement actual payload generation and rendering here.
