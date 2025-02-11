@@ -30,13 +30,15 @@ class Email:
         msg['To'] = email_to
         msg['Bcc'] = email_bcc
 
-        html = MIMEText(htmlBody, 'html')
+        html = MIMEText(self.data['payload']['html'], 'html')
         msg.attach(html)
 
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls(context=simple_email_context)
             server.login(smtp_sender_email, smtp_password)
+
+            # TODO: send BCC properly here instead of visible to the recieved email
             server.sendmail(smtp_sender_email, [email_to, email_bcc], msg.as_string())
         except Exception as e:
             print(e)

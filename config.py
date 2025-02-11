@@ -118,6 +118,9 @@ class ConfigParser():
             self.config.set("templates", "Spanish - Optimized for product reviews", "5c5b13c49d4c8600019d8de3")
             self.config.set("templates", "Swedish - Service reviews", "529c0b40dec7e10ed0ba75cc")
             self.config.set("templates", "Swedish - Optimized for product reviews", "5c5b0e17d036820001e42b25")
+
+            self.config.add_section('payload')
+            self.config.set('payload','html','')
             
             with open('config.ini', 'w') as configfile:
                 self.config.write(configfile)

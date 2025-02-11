@@ -319,6 +319,8 @@ class App(customtkinter.CTk):
         if kwargs.get("send email"):
             print("Sending email")
             self.send_smtp_email()
+
+            return
         
         # Create the payload and update the state
         self.get_values()
@@ -335,15 +337,16 @@ class App(customtkinter.CTk):
         # merge the settings and email and smtp data
         data = self.data_settings | self.data_emails | self.data_smtp
 
-        # update the data dictionary with the new merged data
-        self.data["settings"] = self.data_settings
-        self.data["emails"] = self.data_emails
-        self.data["smtp"] = self.data_smtp
-
         # build the payload
         self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**data).build()
         self.email_body.delete(0.0, "end")
         self.email_body.insert(0.0, self.generate_html(self.payload))
+
+        # update the data dictionary with the new merged data
+        self.data["settings"] = self.data_settings
+        self.data["emails"] = self.data_emails
+        self.data["smtp"] = self.data_smtp
+        self.data["payload"] = {"html":self.generate_html(self.payload)}
 
     def get_payload_type(self):
 
@@ -377,7 +380,8 @@ class App(customtkinter.CTk):
             self.data_emails[key] = value.get()
 
     def generate_html(self, payload):
-        # TODO: Implement actual payload generation and rendering here.
+        
+        # create an HTML string using the payload data
         sds = json.dumps(payload, indent=1)
         html = f"""<html>\n<head>\n<script type='application/json+trustpilot'>\n{sds}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"""
          
