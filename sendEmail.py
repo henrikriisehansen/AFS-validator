@@ -39,7 +39,8 @@ class Email:
             server.login(smtp_sender_email, smtp_password)
 
             # TODO: send BCC properly here instead of visible to the recieved email
-            server.sendmail(smtp_sender_email, [email_to, email_bcc], msg.as_string())
+            # server.sendmail(smtp_sender_email, [email_to,email_bcc], msg.as_string())
+            server.send_message(msg)
         except Exception as e:
             print(e)
         finally:

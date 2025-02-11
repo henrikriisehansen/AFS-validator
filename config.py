@@ -77,7 +77,7 @@ class ConfigParser():
 
             self.config.add_section('payloadKeyMapping')
             self.config.set('payloadKeyMapping','reference_id_checkbox','referenceId')
-            self.config.set('payloadKeyMapping','recipient_email_checkbox','recipient_email_checkbox')
+            self.config.set('payloadKeyMapping','recipient_email_checkbox','recipientEmail')
             self.config.set('payloadKeyMapping','recipient_name_checkbox','recipientName')
             self.config.set('payloadKeyMapping','locale_combobox_checkbox','locale')
             self.config.set('payloadKeyMapping','location_id_checkbox','locationId')

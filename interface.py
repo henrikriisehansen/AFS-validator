@@ -132,7 +132,7 @@ class App(customtkinter.CTk):
 
         self.to_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="To Email")
         self.to_email_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.to_email_entry.insert(0, self.data_settings.get('recipient_email',''))
+        self.to_email_entry.insert(0, self.data['settings']['recipient_email_entry'])
         self.widget_elements["to_email"] = self.to_email_entry
 
         self.BCC_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="BCC Email:", fg_color="transparent", font=self.font)
@@ -140,7 +140,7 @@ class App(customtkinter.CTk):
 
         self.BCC_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="BCC Email")
         self.BCC_email_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.BCC_email_entry.insert(0, self.data['emails']['bcc_email'])
+        self.BCC_email_entry.insert(0, self.data['emails']['afs_email'])
         self.widget_elements["bcc_email"] = self.BCC_email_entry
 
         # Frame for email body
@@ -317,7 +317,7 @@ class App(customtkinter.CTk):
             kwargs["entry"].grid_remove()
 
         if kwargs.get("send email"):
-            print("Sending email")
+           
             self.send_smtp_email()
 
             return
