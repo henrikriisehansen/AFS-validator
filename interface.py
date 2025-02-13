@@ -34,7 +34,7 @@ class App(customtkinter.CTk):
 
         # Initialize email object and set window properties
         self.email:Email = Email()
-        self.title("AFS - generator")
+        self.title("AFS - validator")
         self.geometry("1000x600")
         self.font = customtkinter.CTkFont(family="roboto", size=12, weight="bold")
         self.header_font = customtkinter.CTkFont(family="roboto", size=16, weight="bold")
