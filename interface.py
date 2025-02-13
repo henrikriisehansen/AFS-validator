@@ -178,11 +178,12 @@ class App(customtkinter.CTk):
         
             if "checkbox" in str(key) and "combobox" not in str(key):  
                 checkbox_var = customtkinter.StringVar(value=value)
-                
-                # Store checkbox in a dictionary with key as the name
+              
                 self.checkboxes[key] = customtkinter.CTkCheckBox(
                     master=self.settings_box_frame, 
-                    text=str(key).replace("_", " "), 
+                    text = ' '.join(str(key).split('_')[:3]) if key == 'preffered_send_time_checkbox'
+                    else ' '.join(str(key).split('_')[:5]) if key == 'product_review_invitation_preffered_sendtime_checkbox'
+                    else ' '.join(str(key).split('_')[:2]),   
                     command=lambda k=key: self.event_callback(**{"state": self.checkboxes[k].get(),"entry": self.entryboxes[str(k).replace("checkbox", "entry")]}), 
                     variable=checkbox_var, 
                     onvalue="on", 
@@ -193,7 +194,6 @@ class App(customtkinter.CTk):
                 self.checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ws")
       
-           
             if "entry" in str(key) and "combobox" not in str(key):
                 entry_var = customtkinter.StringVar(value=value)
 
