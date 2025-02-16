@@ -46,20 +46,24 @@ class Service_review_payload:
        pass
 
 class Product_review_payload:
+
+
     def __init__(self,**kwargs):
         self.products = [
             {
 
-        "productUrl": "http://www.companystore.com/.../12345.htm",
-        "imageUrl": "http://www.companystore.com/.../.../12345.jpg",
-        "name": "Metal Toy Car",
+        "productUrl": kwargs.get("product_url_entry",None),
+        "imageUrl": kwargs.get("product_image_url_entry",None),
+        "name": kwargs.get("product_name_entry",None),
         "sku": [v for v in kwargs.get("product_sku_entry").split(',') if v != ''],
-        "gtin": "1234567890",
-        "mpn": "7TX1641",
-        "brand": "Acme",
-        "productCategoryGoogleId": "1253"
+        "gtin": kwargs.get("product_gtin_entry",None),
+        "mpn":kwargs.get("product_mpn_entry",None),
+        "brand": kwargs.get("product_brand_entry"),
+        "productCategoryGoogleId": kwargs.get("product_category_google_id_entry",None)
         
         }]
+
+
 
 class Product_review_sku_payload:
     def __init__(self,**kwargs):

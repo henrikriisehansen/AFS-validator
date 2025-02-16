@@ -135,8 +135,8 @@ class App(customtkinter.CTk):
 
         self.BCC_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="BCC Email")
         self.BCC_email_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.BCC_email_entry.insert(0, self.data_config['bcc_email'])
-        self.widget_elements["bcc_email"] = self.BCC_email_entry
+        self.BCC_email_entry.insert(0, self.data_config['afs_email'])
+        self.widget_elements["afs_email"] = self.BCC_email_entry
 
         # Frame for email body
         self.email_body_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
@@ -294,7 +294,7 @@ class App(customtkinter.CTk):
             
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
-            self.settings_window.focus()  # if window exists focus it
+            self.settings_window.close_window()
 
 
     def close_settings_callback(self):
