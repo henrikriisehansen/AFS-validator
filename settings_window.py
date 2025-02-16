@@ -42,7 +42,7 @@ class settingsWindow(customtkinter.CTkToplevel):
 
         self.smtp_password_Entry = customtkinter.CTkEntry(master=self, placeholder_text="smtp_password")
         self.smtp_password_Entry.grid(row=8, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        
+
         self.attributes("-topmost",True) 
 
         self.protocol("WM_DELETE_WINDOW", self.close_window)
@@ -56,10 +56,10 @@ class settingsWindow(customtkinter.CTkToplevel):
         Retrieve all the values from the entry boxes and return them as a dictionary.
         """
         entryBoxes:dict = {
-            "smtp_sender_email":self.smtp_sender_email_Entry.get(), 
-            "smtp_server":self.smtp_server_Entry.get(), 
-            "smtp_port":self.smtp_port_Entry.get(),
-            "smtp_password":self.smtp_password_Entry.get()
+            "smtp_sender_email":self.smtp_sender_email_Entry, 
+            "smtp_server":self.smtp_server_Entry, 
+            "smtp_port":self.smtp_port_Entry,
+            "smtp_password":self.smtp_password_Entry
         }
 
         return entryBoxes
@@ -76,5 +76,6 @@ class settingsWindow(customtkinter.CTkToplevel):
                 getattr(self, f"{key}_Entry").delete(0, "end")
                 getattr(self, f"{key}_Entry").insert(0, value)
 
+    
 
-        
+

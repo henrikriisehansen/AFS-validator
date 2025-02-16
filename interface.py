@@ -4,22 +4,18 @@ from sendEmail import Email
 import json
 from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
+from itertools import chain
 
 class App(customtkinter.CTk):
     def __init__(self):
-        
         super().__init__()
 
-        # Initialize configuration and locale data
-        self.configparser:ConfigParser = ConfigParser()
-        self.data:dict = self.configparser._get_config()
-        
-        self.data_settings:dict = self.data["settings"]
-        self.data_smtp:dict = self.data["smtp"]
-        self.data_emails:dict = self.data["emails"]
-        self.data_locale:dict = self.data["locale"]
+        self.configparser: ConfigParser = ConfigParser()
+        self.data: dict = self.configparser._get_config()
+        self.data_config: dict = self.data["config"]
+        self.data_locale: dict = self.data["locale"]
         self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
-        self.data_templates:dict = self.data["templates"]
+        self.data_templates: dict = self.data["templates"]
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -65,7 +61,7 @@ class App(customtkinter.CTk):
 
         self.afs_email_Entry = customtkinter.CTkEntry(master=self.email_frame_entry_inner_frame, placeholder_text="AFS email")
         self.afs_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        self.afs_email_Entry.insert(0, self.data['emails']['afs_email'])
+        self.afs_email_Entry.insert(0, self.data_config['afs_email'])
         self.widget_elements["afs_email"] = self.afs_email_Entry
 
         # Invitation type combobox
@@ -76,9 +72,8 @@ class App(customtkinter.CTk):
         self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
                                                   command=lambda x :self.event_callback(**{"state":self.combobox.get()}), variable=self.combobox_var)
         self.combobox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        self.combobox.set(self.data["emails"]["invitation_type"])
+        self.combobox.set(self.data_config["invitation_type"])
         self.widget_elements["invitation_type"] = self.combobox
-        
         
 
         # Buttons frame
@@ -124,7 +119,7 @@ class App(customtkinter.CTk):
 
         self.subject = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="Email Subject")
         self.subject.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.subject.insert(0, self.data["emails"]["email_subject"])
+        self.subject.insert(0, self.data_config["email_subject"])
         self.widget_elements["subject"] = self.subject
 
         self.to_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="To Email:", fg_color="transparent", font=self.font)
@@ -132,7 +127,7 @@ class App(customtkinter.CTk):
 
         self.to_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="To Email")
         self.to_email_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.to_email_entry.insert(0, self.data['settings']['recipient_email_entry'])
+        self.to_email_entry.insert(0, self.data_config['recipient_email_entry'])
         self.widget_elements["to_email"] = self.to_email_entry
 
         self.BCC_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="BCC Email:", fg_color="transparent", font=self.font)
@@ -140,7 +135,7 @@ class App(customtkinter.CTk):
 
         self.BCC_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="BCC Email")
         self.BCC_email_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.BCC_email_entry.insert(0, self.data['emails']['afs_email'])
+        self.BCC_email_entry.insert(0, self.data_config['bcc_email'])
         self.widget_elements["bcc_email"] = self.BCC_email_entry
 
         # Frame for email body
@@ -174,7 +169,7 @@ class App(customtkinter.CTk):
         self.template_checkboxes = {} # Dictionary to store dynamically created template checkboxes
         self.template_combobox = {} # Dictionary to store dynamically created template entries
 
-        for key, value in self.data_settings.items():
+        for key, value in self.data_config.items():
         
             if "checkbox" in str(key) and "combobox" not in str(key):  
                 checkbox_var = customtkinter.StringVar(value=value)
@@ -191,7 +186,7 @@ class App(customtkinter.CTk):
                 )
                 
                 # Grid placement
-                self.checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                self.checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ws")
       
             if "entry" in str(key) and "combobox" not in str(key):
@@ -205,7 +200,7 @@ class App(customtkinter.CTk):
                 )
                 
                 # Grid placement
-                self.entryboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                self.entryboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ewn")
                 # check if entry is visible and update
                 self.entryboxes[key].grid() if self.checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.entryboxes[key].grid_remove()
@@ -226,7 +221,7 @@ class App(customtkinter.CTk):
                 )
                 
                 # Grid placement
-                self.combobox_checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                self.combobox_checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ws")
 
 
@@ -242,7 +237,7 @@ class App(customtkinter.CTk):
                 )
                 
                 # Grid placement
-                self.comboboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0, 
+                self.comboboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
                                         padx=self.element_padx, pady=self.element_pady, sticky="ewn")
                 
                 # Set initial value
@@ -265,7 +260,7 @@ class App(customtkinter.CTk):
                 )
 
                 # Grid placement
-                self.template_checkboxes[key].grid(row=list(self.data_settings.keys()).index(key), column=0,
+                self.template_checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0,
                                                     padx=self.element_padx, pady=self.element_pady, sticky="ws")
                 
             if "template_combobox_entry" in str(key):
@@ -281,7 +276,7 @@ class App(customtkinter.CTk):
                 )
 
                 # Grid placement
-                self.template_combobox[key].grid(row=list(self.data_settings.keys()).index(key), column=0,
+                self.template_combobox[key].grid(row=list(self.data_config.keys()).index(key), column=0,
                                                         padx=self.element_padx, pady=self.element_pady, sticky="ewn")
                 # Set initial value
                 self.template_combobox[key].set(value)
@@ -295,7 +290,7 @@ class App(customtkinter.CTk):
         # open settings window if it's not already opened
         if not hasattr(self,"settings_window"):
             self.settings_window = settingsWindow(self)  # create window if its None or destroyed
-            self.settings_window._set(**self.data_smtp)
+            self.settings_window._set(**self.data_config)
             
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
@@ -335,7 +330,7 @@ class App(customtkinter.CTk):
     def build_payload(self):
 
         # merge the settings and email and smtp data
-        data = self.data_settings | self.data_emails | self.data_smtp
+        data = self.data_config
 
         # build the payload
         self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**data).build()
@@ -343,9 +338,7 @@ class App(customtkinter.CTk):
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
         # update the data dictionary with the new merged data
-        self.data["settings"] = self.data_settings
-        self.data["emails"] = self.data_emails
-        self.data["smtp"] = self.data_smtp
+        self.data["config"] = self.data_config
         self.data["payload"] = {"html":self.generate_html(self.payload)}
 
     def get_payload_type(self):
@@ -363,21 +356,16 @@ class App(customtkinter.CTk):
         
         settingsElements:dict = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
        
-        for key,value in settingsElements.items():
-
-            self.data_settings[key] = value.get()
-
+        configElementValues:dict = settingsElements| self.widget_elements
+        smptElements:dict = {}
+        
         if hasattr(self,"settings_window"):
-
             smptElements:dict = self.settings_window._get()
+            
+        # configElements:dict = chain(configElementValues.items(),smptElements.items())
+        for key,value in chain(configElementValues.items(),smptElements.items()):
 
-            for key, value in smptElements.items():
-                
-                self.data_smtp[key] = value
-
-        for key,value in self.widget_elements.items():
-
-            self.data_emails[key] = value.get()
+            self.data_config[key] = value.get()
 
     def generate_html(self, payload):
         
@@ -391,5 +379,7 @@ class App(customtkinter.CTk):
         self.clipboard_clear()
         self.clipboard_append(self.link.get())
         self.update()
+
+
 
 

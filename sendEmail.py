@@ -7,19 +7,19 @@ from email.mime.text import MIMEText
 class Email:
     def __init__(self,**kwargs) -> None:
         
-        self.data = kwargs
-        
+        self.data:dict = kwargs.get('config', None)
+        self.payload:dict = kwargs.get('payload', None)
 
     def send_email(self) -> None:
         
-        smtp_port = self.data['smtp']['smtp_port']
-        smtp_server = self.data['smtp']['smtp_server']
-        smtp_password = self.data['smtp']['smtp_password']
-        smtp_sender_email = self.data['smtp']['smtp_sender_email']
+        smtp_port = self.data.get('smtp_port', None)
+        smtp_server = self.data.get('smtp_server', None)
+        smtp_password = self.data.get('smtp_password', None)
+        smtp_sender_email = self.data.get('smtp_sender_email', None)
 
-        email_subject = self.data['emails']['subject']
-        email_to = self.data['settings']['recipient_email_entry']
-        email_bcc = self.data['emails']['afs_email']
+        email_subject = self.data.get('email_subject', None)
+        email_to = self.data.get('email_to', None)
+        email_bcc = self.data.get('afs_email', None)
     
         simple_email_context = ssl.create_default_context()
 
@@ -29,7 +29,7 @@ class Email:
         msg['To'] = email_to
         msg['Bcc'] = email_bcc
 
-        html = MIMEText(self.data['payload']['html'], 'html')
+        html = MIMEText(self.payload.get('html',None), 'html')
         msg.attach(html)
 
         try:

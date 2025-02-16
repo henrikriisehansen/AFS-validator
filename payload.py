@@ -53,7 +53,7 @@ class Product_review_payload:
         "productUrl": "http://www.companystore.com/.../12345.htm",
         "imageUrl": "http://www.companystore.com/.../.../12345.jpg",
         "name": "Metal Toy Car",
-        "sku": kwargs.get("sku_entry"),
+        "sku": [v for v in kwargs.get("product_sku_entry").split(',') if v != ''],
         "gtin": "1234567890",
         "mpn": "7TX1641",
         "brand": "Acme",
@@ -63,7 +63,7 @@ class Product_review_payload:
 
 class Product_review_sku_payload:
     def __init__(self,**kwargs):
-        self.productSkus = [v for v in kwargs.get("sku_entry").split(',') if v != '']
+        self.productSkus = [v for v in kwargs.get("product_sku_entry").split(',') if v != '']
 
 class BasePayload:
     def __init__(self,payloadKeyMapping:dict,templates:dict,**kwargs):
@@ -92,6 +92,9 @@ class BasePayload:
                 entryValue = templates.get(entryValue, '')
 
             setattr(self, payloadKeyMapping[key], entryValue)
+
+
+
           
 class HelperFunctions:
 
