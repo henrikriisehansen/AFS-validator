@@ -5,6 +5,7 @@ import json
 from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
 from itertools import chain
+from interface_elements.menu import Menu
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -37,63 +38,10 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure((0, 1, 2), weight=1)
         self.grid_rowconfigure((0), weight=1)
 
-        # Column 0: Email settings
-        self.set_email_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.set_email_frame.grid(row=0, column=0, sticky="news")
-        self.set_email_frame.grid_rowconfigure((0, 1, 2), weight=1)
-        self.set_email_frame.grid_columnconfigure((0), weight=1)
+        #menu frame
+        self.menu = Menu(self)
 
-        # Email entry frame
-        self.set_email_frame_entry = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.set_email_frame_entry.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
-        self.set_email_frame_entry.grid_rowconfigure((0), weight=1)
-        self.set_email_frame_entry.grid_columnconfigure((0), weight=1)
-
-        # Inner frame for email entry
-        self.email_frame_entry_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_entry,corner_radius=self.frame_corner_radius)
-        self.email_frame_entry_inner_frame.grid(row=0, column=0, sticky="new")
-        self.email_frame_entry_inner_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
-        self.email_frame_entry_inner_frame.grid_columnconfigure((0), weight=1)
-
-        # AFS email label and entry
-        self.afs_email_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="AFS email:", fg_color="transparent", font=self.font)
-        self.afs_email_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        self.afs_email_Entry = customtkinter.CTkEntry(master=self.email_frame_entry_inner_frame, placeholder_text="AFS email")
-        self.afs_email_Entry.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        self.afs_email_Entry.insert(0, self.data_config['afs_email'])
-        self.widget_elements["afs_email"] = self.afs_email_Entry
-
-        # Invitation type combobox
-        self.combobox_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="Select invitation type:", fg_color="transparent", font=self.font)
-        self.combobox_label.grid(row=2, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        self.combobox_var = customtkinter.StringVar(value="Service Review")
-        self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
-                                                  command=lambda x :self.event_callback(**{"state":self.combobox.get()}), variable=self.combobox_var)
-        self.combobox.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-        self.combobox.set(self.data_config["invitation_type"])
-        self.widget_elements["invitation_type"] = self.combobox
-        
-
-        # Buttons frame
-        self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=self.frame_corner_radius,fg_color="transparent",bg_color="transparent")
-        self.set_email_frame_buttons.grid(row=2, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="sewn")
-        self.set_email_frame_buttons.grid_rowconfigure((0), weight=1)
-        self.set_email_frame_buttons.grid_columnconfigure((0), weight=1)
-
-        # Inner frame for buttons
-        self.email_frame_buttons_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_buttons,corner_radius=self.frame_corner_radius)
-        self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sew")
-        self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
-        self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
-
-        #Generate and send email buttons
-        self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:self.open_settings_callback())
-        self.settings.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-
-        self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:self.event_callback(**{"send email":True}))
-        self.send_email.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
+        #
 
         # Column 1: Email content
         self.email_box_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent") 
@@ -329,9 +277,8 @@ class App(customtkinter.CTk):
        
     def build_payload(self):
 
-        # merge the settings and email and smtp data
         data = self.data_config
-
+        
         # build the payload
         self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**data).build()
         self.email_body.delete(0.0, "end")
@@ -350,7 +297,7 @@ class App(customtkinter.CTk):
             "service & product review using sku": PayloadType.SERVICE_AND_PRODUCT_REVIEW_SKU
         }
 
-        return invitation_type[str(self.combobox.get()).lower()]
+        return invitation_type[str(self.menu.combobox.get()).lower()]
 
     def get_values(self):
         
