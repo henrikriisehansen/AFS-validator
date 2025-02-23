@@ -6,6 +6,8 @@ from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
 from itertools import chain
 from interface_elements.menu import Menu
+from interface_elements.email_frame import Email_frame
+from interface_elements.settings_frame import Settings_frame
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -38,203 +40,21 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure((0, 1, 2), weight=1)
         self.grid_rowconfigure((0), weight=1)
 
-        #menu frame
+        # menu frame
         self.menu = Menu(self)
 
-        #
+        # email frame
+        self.email_frame = Email_frame(self)
 
-        # Column 1: Email content
-        self.email_box_frame = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent") 
-        self.email_box_frame.grid(row=0, column=1, sticky="nsew")  
-        self.email_box_frame.grid_rowconfigure((0, 1), weight=1)
-        self.email_box_frame.grid_columnconfigure((0), weight=1)
+        # settings frame 
+        self.settings_frame = Settings_frame(self)
 
-        # Upper frame for email content
-        self.email_box_upper_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.email_box_upper_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
-        self.email_box_upper_frame.grid_rowconfigure((0), weight=1)
-        self.email_box_upper_frame.grid_columnconfigure((0), weight=1)
-
-        # Inner frame for email content
-        self.email_box_inner_upper_frame = customtkinter.CTkFrame(master=self.email_box_upper_frame,corner_radius=self.frame_corner_radius)
-        self.email_box_inner_upper_frame.grid(row=0, column=0, sticky="new")
-        self.email_box_inner_upper_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
-        self.email_box_inner_upper_frame.grid_columnconfigure((0), weight=1)
-
-        # Email subject and recipient entries
-        self.subject_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="Email Subject:", fg_color="transparent", font=self.font)
-        self.subject_label.grid(row=0, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        self.subject = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="Email Subject")
-        self.subject.grid(row=1, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.subject.insert(0, self.data_config["email_subject"])
-        self.widget_elements["subject"] = self.subject
-
-        self.to_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="To Email:", fg_color="transparent", font=self.font)
-        self.to_email_entry_label.grid(row=3, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        self.to_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="To Email")
-        self.to_email_entry.grid(row=4, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.to_email_entry.insert(0, self.data_config['recipient_email_entry'])
-        self.widget_elements["to_email"] = self.to_email_entry
-
-        self.BCC_email_entry_label = customtkinter.CTkLabel(master=self.email_box_inner_upper_frame, text="BCC Email:", fg_color="transparent", font=self.font)
-        self.BCC_email_entry_label.grid(row=5, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-        self.BCC_email_entry = customtkinter.CTkEntry(master=self.email_box_inner_upper_frame, placeholder_text="BCC Email")
-        self.BCC_email_entry.grid(row=6, column=0, padx=self.element_padx, pady=self.element_pady, sticky="ew")
-        self.BCC_email_entry.insert(0, self.data_config['afs_email'])
-        self.widget_elements["afs_email"] = self.BCC_email_entry
-
-        # Frame for email body
-        self.email_body_frame = customtkinter.CTkFrame(master=self.email_box_frame,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.email_body_frame.grid(row=1, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="nsew")
-        self.email_body_frame.grid_rowconfigure((0), weight=1)
-        self.email_body_frame.grid_columnconfigure((0), weight=1)
-
-        # Email body text box
-        self.email_body = customtkinter.CTkTextbox(master=self.email_body_frame)
-        self.email_body.grid(row=0, column=0, sticky="ewsn")
-
-        # Column 2: Settings
-        self.settings_box = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.settings_box.grid(row=0, column=2, sticky="nsew")
-        self.settings_box.grid_rowconfigure((0), weight=1)
-        self.settings_box.grid_columnconfigure((0), weight=1)
-
-        # Scrollable frame for settings
-        self.settings_box_frame = customtkinter.CTkScrollableFrame(master=self.settings_box,corner_radius=self.frame_corner_radius)
-        self.settings_box_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
-        self.settings_box_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), weight=1)
-        self.settings_box_frame.grid_columnconfigure((0), weight=1)
-
-        # Various settings checkboxes and entries
-
-        self.checkboxes = {}  # Dictionary to store dynamically created checkboxes
-        self.entryboxes = {} # Dictionary to store dynamically created entry boxes
-        self.combobox_checkboxes = {} # Dictionary to store dynamically created checkboxes
-        self.comboboxes = {} # Dictionary to store dynamically created comboboxes
-        self.template_checkboxes = {} # Dictionary to store dynamically created template checkboxes
-        self.template_combobox = {} # Dictionary to store dynamically created template entries
-
-        for key, value in self.data_config.items():
-        
-            if "checkbox" in str(key) and "combobox" not in str(key):  
-                checkbox_var = customtkinter.StringVar(value=value)
-              
-                self.checkboxes[key] = customtkinter.CTkCheckBox(
-                    master=self.settings_box_frame, 
-                    text = ' '.join(str(key).split('_')[:3]) if key == 'preffered_send_time_checkbox'
-                    else ' '.join(str(key).split('_')[:5]) if key == 'product_review_invitation_preffered_sendtime_checkbox'
-                    else ' '.join(str(key).split('_')[:2]),   
-                    command=lambda k=key: self.event_callback(**{"state": self.checkboxes[k].get(),"entry": self.entryboxes[str(k).replace("checkbox", "entry")]}), 
-                    variable=checkbox_var, 
-                    onvalue="on", 
-                    offvalue="off"
-                )
-                
-                # Grid placement
-                self.checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
-                                        padx=self.element_padx, pady=self.element_pady, sticky="ws")
-      
-            if "entry" in str(key) and "combobox" not in str(key):
-                entry_var = customtkinter.StringVar(value=value)
-
-                # Store entry in a dictionary with key as the name
-                self.entryboxes[key] = customtkinter.CTkEntry(
-                    master=self.settings_box_frame, 
-                    placeholder_text=str(key).replace("_", " "),
-                    textvariable=entry_var
-                )
-                
-                # Grid placement
-                self.entryboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
-                                        padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-                # check if entry is visible and update
-                self.entryboxes[key].grid() if self.checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.entryboxes[key].grid_remove()
-            
-            if "locale_combobox_checkbox" in str(key):
-                checkbox_var = customtkinter.StringVar(value=value)
-                
-                
-
-                # Store checkbox in a dictionary with key as the name
-                self.combobox_checkboxes[key] = customtkinter.CTkCheckBox(
-                    master=self.settings_box_frame, 
-                    text=str(key).replace("_", " "), 
-                    command=lambda k=key: self.event_callback(**{"state": self.combobox_checkboxes[k].get(),"entry":self.comboboxes[str(k).replace("checkbox", "entry")]}), 
-                    variable=checkbox_var, 
-                    onvalue="on", 
-                    offvalue="off"
-                )
-                
-                # Grid placement
-                self.combobox_checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
-                                        padx=self.element_padx, pady=self.element_pady, sticky="ws")
-
-
-            if "locale_combobox_entry" in str(key):
-                combobox_var = customtkinter.StringVar(value=value)
-
-                # Store combobox in a dictionary with key as the name
-                self.comboboxes[key] = customtkinter.CTkComboBox(
-                    master=self.settings_box_frame, 
-                    values=[k for (k,v) in self.data_locale.items() if v is not None], 
-                    command=lambda k: self.event_callback(**{"state":None,"entry":None}), 
-                    variable=combobox_var
-                )
-                
-                # Grid placement
-                self.comboboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0, 
-                                        padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-                
-                # Set initial value
-                self.comboboxes[key].set(value)
-
-                # check if combobox is visible and update
-                self.comboboxes[key].grid() if self.combobox_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.comboboxes[key].grid_remove()
-
-            if "template_combobox_checkbox" in str(key):
-                checkbox_var = customtkinter.StringVar(value=value)
-                
-                # Store checkbox in a dictionary with key as the name
-                self.template_checkboxes[key] = customtkinter.CTkCheckBox(
-                    master=self.settings_box_frame,
-                    text=str(key).replace("_", " "),
-                    command=lambda k=key: self.event_callback(**{"state": self.template_checkboxes[k].get(),"entry":self.template_combobox[str(k).replace("checkbox", "entry")]}),
-                    variable=checkbox_var,
-                    onvalue="on",
-                    offvalue="off"
-                )
-
-                # Grid placement
-                self.template_checkboxes[key].grid(row=list(self.data_config.keys()).index(key), column=0,
-                                                    padx=self.element_padx, pady=self.element_pady, sticky="ws")
-                
-            if "template_combobox_entry" in str(key):
-                
-                combobox_var = customtkinter.StringVar(value=value)
-                
-                # Store combobox in a dictionary with key as the name
-                self.template_combobox[key] = customtkinter.CTkComboBox(
-                    master=self.settings_box_frame,
-                    values=[x for x in self.data_templates.keys()],
-                    command=lambda k: self.event_callback(**{"state":None,"entry":None}),
-                    variable= combobox_var
-                )
-
-                # Grid placement
-                self.template_combobox[key].grid(row=list(self.data_config.keys()).index(key), column=0,
-                                                        padx=self.element_padx, pady=self.element_pady, sticky="ewn")
-                # Set initial value
-                self.template_combobox[key].set(value)
-                # check if combobox is visible and update
-                self.template_combobox[key].grid() if self.template_checkboxes[str(key).replace("entry","checkbox")].get() == 'on' else self.template_combobox[key].grid_remove()
         self.build_payload()
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
     
     def open_settings_callback(self):
+        
         # open settings window if it's not already opened
         if not hasattr(self,"settings_window"):
             self.settings_window = settingsWindow(self)  # create window if its None or destroyed
@@ -277,10 +97,8 @@ class App(customtkinter.CTk):
        
     def build_payload(self):
 
-        data = self.data_config
-        
         # build the payload
-        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**data).build()
+        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**self.data_config).build()
         self.email_body.delete(0.0, "end")
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
