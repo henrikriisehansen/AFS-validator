@@ -54,6 +54,7 @@ class ConfigParser():
             self.config.set('config', 'product_brand_entry', 'Acme')
             self.config.set('config', 'product_category_google_id_checkbox', 'off')
             self.config.set('config', 'product_category_google_id_entry', '1253')
+            self.config.set('config', 'generate_random_reference_number', 'False')
 
             self.config.add_section('locale')
             self.config.set('locale', 'en-US', 'www.trustpilot.com')

@@ -8,6 +8,8 @@ from itertools import chain
 from interface_elements.menu import Menu
 from interface_elements.email_frame import Email_frame
 from interface_elements.settings_frame import Settings_frame
+import random
+import string
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -19,6 +21,7 @@ class App(customtkinter.CTk):
         self.data_locale: dict = self.data["locale"]
         self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
         self.data_templates: dict = self.data["templates"]
+        
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -53,11 +56,11 @@ class App(customtkinter.CTk):
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
     
-    def open_settings_callback(self):
+    def open_settings_callback(self)-> None:
         
         # open settings window if it's not already opened
         if not hasattr(self,"settings_window"):
-            self.settings_window = settingsWindow(self)  # create window if its None or destroyed
+            self.settings_window:settingsWindow = settingsWindow(self)  # create window if its None or destroyed
             self.settings_window._set(**self.data_config)
             
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
@@ -85,7 +88,7 @@ class App(customtkinter.CTk):
 
             return
         
-        # Create the payload and update the state
+        # Create the payload and update the data
         self.get_values()
         self.build_payload()
         self.configparser.set_config(**self.data)
@@ -139,6 +142,9 @@ class App(customtkinter.CTk):
         html = f"""<html>\n<head>\n<script type='application/json+trustpilot'>\n{sds}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"""
          
         return html
+    
+    def generate_random_string(self):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     def copy_link_callback(self):
         self.clipboard_clear()
