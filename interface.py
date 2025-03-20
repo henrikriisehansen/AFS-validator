@@ -11,17 +11,21 @@ from interface_elements.settings_frame import Settings_frame
 import random
 import string
 
+from tomlParser import Config
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        self.configparser: ConfigParser = ConfigParser()
-        self.data: dict = self.configparser._get_config()
+        # Initialize ConfigParser object and load config.toml
+        self.tomlData:Config = Config() 
+        self.data:dict = self.tomlData.get_config()
+
         self.data_config: dict = self.data["config"]
         self.data_locale: dict = self.data["locale"]
         self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
         self.data_templates: dict = self.data["templates"]
-        
+        self.data_settings: dict = self.data["settings"]
 
         # Frame padding and styling
         self.frame_padx:int = 8

@@ -59,16 +59,4 @@ class Email_frame(customtkinter.CTkFrame):
         self.email_body = customtkinter.CTkTextbox(master=self.email_body_frame)
         self.email_body.grid(row=0, column=0, sticky="ewsn")
 
-        # Column 2: Settings
-        self.settings_box = customtkinter.CTkFrame(master=self,corner_radius=self.frame_corner_radius,fg_color="transparent")
-        self.settings_box.grid(row=0, column=2, sticky="nsew")
-        self.settings_box.grid_rowconfigure((0), weight=1)
-        self.settings_box.grid_columnconfigure((0), weight=1)
-
-        # Scrollable frame for settings
-        self.settings_box_frame = customtkinter.CTkScrollableFrame(master=self.settings_box,corner_radius=self.frame_corner_radius)
-        self.settings_box_frame.grid(row=0, column=0, padx=self.frame_padx, pady=self.frame_pady, sticky="news")
-        self.settings_box_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), weight=1)
-        self.settings_box_frame.grid_columnconfigure((0), weight=1)
-
         
