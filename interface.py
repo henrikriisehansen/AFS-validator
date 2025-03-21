@@ -80,10 +80,10 @@ class App(customtkinter.CTk):
     def event_callback(self,**kwargs):
         
         # Handle state change for checkboxes and dropdowns
-        if kwargs.get("state") == "on" and kwargs.get('entry') != None:
+        if kwargs.get("state") == "on":
             kwargs["entry"].grid() 
 
-        if kwargs.get("state") == "off" and kwargs.get('entry') != None:
+        if kwargs.get("state") == "off":
             kwargs["entry"].grid_remove()
 
         if kwargs.get("send email"):
@@ -95,7 +95,7 @@ class App(customtkinter.CTk):
         # Create the payload and update the data
         self.get_values()
         self.build_payload()
-        self.configparser.set_config(**self.data)
+        self.tomlData.save_config(**self.data)
         
     def send_smtp_email(self):
 
@@ -126,18 +126,22 @@ class App(customtkinter.CTk):
 
     def get_values(self):
         
-        settingsElements:dict = self.checkboxes | self.entryboxes | self.comboboxes | self.combobox_checkboxes | self.template_checkboxes | self.template_combobox
+        settingsElements:dict = self.settings_frame.frames
        
-        configElementValues:dict = settingsElements| self.widget_elements
-        smptElements:dict = {}
-        
-        if hasattr(self,"settings_window"):
-            smptElements:dict = self.settings_window._get()
-            
-        # configElements:dict = chain(configElementValues.items(),smptElements.items())
-        for key,value in chain(configElementValues.items(),smptElements.items()):
+        for key, value in settingsElements.items():
 
-            self.data_config[key] = value.get()
+            self.data_settings[key]['value'] = value.checkbox_var.get()
+            self.data_settings[key]['text'] = value.entry_var.get()
+        # configElementValues:dict = settingsElements| self.widget_elements
+        # smptElements:dict = {}
+        
+        # if hasattr(self,"settings_window"):
+        #     smptElements:dict = self.settings_window._get()
+            
+        # # configElements:dict = chain(configElementValues.items(),smptElements.items())
+        # for key,value in chain(configElementValues.items(),smptElements.items()):
+
+        #     self.data_config[key] = value.get()
 
     def generate_html(self, payload):
         

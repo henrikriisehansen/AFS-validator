@@ -18,7 +18,7 @@ class Config:
                 data = toml.load(f)
             
             self.data = data
-            # print(self.data)
+            
         except FileNotFoundError:
             print("Error: config.toml not found")
         except toml.decoder.TomlDecodeError as e:
@@ -26,7 +26,9 @@ class Config:
 
 
     def save_config(self, **kwargs):
-        pass
+
+        with open('config.toml', 'w') as f:
+                toml.dump(kwargs, f)
 
 
     def get_config(self):
@@ -160,7 +162,8 @@ class Config:
             "html": ""
         },
         "settings": {
-            "recipient_email_entry":{"type": "entry","label": "Recipient Email","value":"on","text":"recipientEmail@gmail.com"}
+            "recipient_email":{"type": "entry","label": "Recipient Email","value":"on","text":"recipientEmail@gmail.com"},
+            "recipient_name":{"type": "entry","label": "Recipient Name","value":"on","text":"recipientEmail@gmail.com"}
 
         }
         }

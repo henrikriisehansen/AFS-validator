@@ -119,10 +119,16 @@ product_review_invitation_preffered_sendtime_checkbox = "productReviewInvitation
 "Swedish - Optimized for product reviews" = "5c5b0e17d036820001e42b25"
 
 [payload]
-html = ""
+html = "<html>\n<head>\n<script type='application/json+trustpilot'>\n{\n \"recipientEmail\": \"recipientEmail@gmail.com\",\n \"referenceId\": \"1234\",\n \"recipientName\": \"recipientName\"\n}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"
 
-[settings.recipient_email_entry]
+[settings.recipient_email]
 type = "entry"
 label = "Recipient Email"
+value = "on"
+text = "recipientEmail@gmail.com"
+
+[settings.recipient_name]
+type = "entry"
+label = "Recipient Name"
 value = "on"
 text = "recipientEmail@gmail.com"

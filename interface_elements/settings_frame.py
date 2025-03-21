@@ -3,10 +3,11 @@ import customtkinter
 class Settings_frame(customtkinter.CTkFrame):
 
     def __init__(self,parent):
-
+        
+        """Construct a new Settings frame with the given parent"""
      
         super().__init__(parent)
-        
+
         self.container = customtkinter.CTkFrame(master=parent,corner_radius=parent.frame_corner_radius,fg_color="transparent")
         self.container.grid(row=0, column=2, sticky="news")
         self.container.grid_rowconfigure((0), weight=1)
@@ -15,44 +16,49 @@ class Settings_frame(customtkinter.CTkFrame):
         # Scrollable frame for settings
         self.settings_box_frame = customtkinter.CTkScrollableFrame(master=self.container,corner_radius=parent.frame_corner_radius)
         self.settings_box_frame.grid(row=0, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="news")
-        self.settings_box_frame.grid_rowconfigure((0), weight=1)
+        self.settings_box_frame.grid_rowconfigure((0,1,2,3), weight=1)
         self.settings_box_frame.grid_columnconfigure((0), weight=1)
 
-        # self.checkboxes = {}  # Dictionary to store dynamically created checkboxes
-        # self.entryboxes = {} # Dictionary to store dynamically created entry boxes
-        # self.combobox_checkboxes = {} # Dictionary to store dynamically created checkboxes
-        # self.comboboxes = {} # Dictionary to store dynamically created comboboxes
-        # self.template_checkboxes = {} # Dictionary to store dynamically created template checkboxes
-        # self.template_combobox = {} # Dictionary to store dynamically created template entries
+        # Dictionary to store dynamically created frames
+        self.frames = {}
 
-        self.frames = {} # Dictionary to store dynamically created frames
-
-       
+        index = 0
+       # loop through all the frames 
         for key, value in parent.data_settings.items():
-             
+
+            if value['type'] == 'checkbox':
+                 pass
+        
             if value['type'] == 'entry':
-                frame = Entry(self.settings_box_frame,parent,**value)
+                frame = Entry(self.settings_box_frame,parent,index,**value)
             
             self.frames[key] = frame
 
-            frame.grid(row=list(parent.data_settings.keys()).index(key), column=0)
+            index += 2
+            # frame.grid(row=list(parent.data_settings.keys()).index(key), column=0)
            
            
 class Entry(customtkinter.CTkFrame):
 
-    def __init__(self,parent,controller,**kwargs):
+    def __init__(self,parent,controller,index,**kwargs):
             
             customtkinter.CTkFrame.__init__(self,parent)
 
             self.checkbox_var = customtkinter.StringVar(value=kwargs.get('value'))
 
-            self.checkBox = customtkinter.CTkCheckBox(master=parent,text=kwargs.get('label'),variable=self.checkbox_var,onvalue='on',offvalue='off')
-            self.checkBox.grid(row=0, column=0,sticky="ws")
+            self.checkBox = customtkinter.CTkCheckBox(
+                 master=parent,text=kwargs.get('label'),
+                 variable=self.checkbox_var,
+                 onvalue='on',
+                 offvalue='off')
+            self.checkBox.grid(row=index, column=0,sticky="wn")
 
             self.entry_var = customtkinter.StringVar(value=kwargs.get('text'))
 
             self.entry = customtkinter.CTkEntry(master=parent, textvariable=self.entry_var)
-            self.entry.grid(row=1, column=0,pady=8, sticky="ewn")
+            self.entry.grid(row=index+1, column=0,pady=8, sticky="ewn")
+
+            self.checkBox._command = lambda x=self.checkBox:controller.event_callback(**{"state":x.get(),"entry":self.entry})
 
 
 
