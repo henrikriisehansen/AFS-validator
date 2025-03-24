@@ -2,7 +2,6 @@ import customtkinter
 from settings_window import settingsWindow
 from sendEmail import Email
 import json
-from config import ConfigParser
 from payload import PayloadBuilder, PayloadType
 from itertools import chain
 from interface_elements.menu import Menu
@@ -76,7 +75,6 @@ class App(customtkinter.CTk):
         
         delattr(self,"settings_window")
         
-        
     def event_callback(self,**kwargs):
         
         # Handle state change for checkboxes and dropdowns
@@ -105,7 +103,7 @@ class App(customtkinter.CTk):
     def build_payload(self):
 
         # build the payload
-        self.payload = PayloadBuilder(self.get_payload_type(),self.data_payloadKeyMapping,self.data_templates,**self.data_config).build()
+        self.payload = PayloadBuilder(self.get_payload_type(),self.data_templates,**self.data_settings).build()
         self.email_body.delete(0.0, "end")
         self.email_body.insert(0.0, self.generate_html(self.payload))
 
@@ -130,15 +128,20 @@ class App(customtkinter.CTk):
        
         for key, value in settingsElements.items():
 
-            self.data_settings[key]['value'] = value.checkbox_var.get()
-            self.data_settings[key]['text'] = value.entry_var.get()
-        # configElementValues:dict = settingsElements| self.widget_elements
-        # smptElements:dict = {}
+            self.data_settings[key]['checkbox_value'] = value.checkbox_var.get()
+            self.data_settings[key]['value'] = value.value.get()
+
+       
+
         
-        # if hasattr(self,"settings_window"):
-        #     smptElements:dict = self.settings_window._get()
+
+        configElementValues:dict = settingsElements| self.widget_elements
+        smptElements:dict = {}
+        
+        if hasattr(self,"settings_window"):
+            smptElements:dict = self.settings_window._get()
             
-        # # configElements:dict = chain(configElementValues.items(),smptElements.items())
+        # configElements:dict = chain(configElementValues.items(),smptElements.items())
         # for key,value in chain(configElementValues.items(),smptElements.items()):
 
         #     self.data_config[key] = value.get()

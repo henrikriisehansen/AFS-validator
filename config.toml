@@ -119,16 +119,40 @@ product_review_invitation_preffered_sendtime_checkbox = "productReviewInvitation
 "Swedish - Optimized for product reviews" = "5c5b0e17d036820001e42b25"
 
 [payload]
-html = "<html>\n<head>\n<script type='application/json+trustpilot'>\n{\n \"recipientEmail\": \"recipientEmail@gmail.com\",\n \"referenceId\": \"1234\",\n \"recipientName\": \"recipientName\"\n}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"
+html = "<html>\n<head>\n<script type='application/json+trustpilot'>\n{\n \"recipientEmail\": \"recipientEmail@gmail.com\",\n \"recipientName\": \"john doe\",\n \"referenceId\": \"1234\",\n \"locationId\": \"12345\",\n \"tags\": [\n  \"testTag\",\n  \"testtag2\"\n ]\n}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"
 
-[settings.recipient_email]
+[settings.recipientEmail]
 type = "entry"
 label = "Recipient Email"
-value = "on"
-text = "recipientEmail@gmail.com"
+checkbox_value = "on"
+value = "recipientEmail@gmail.com"
 
-[settings.recipient_name]
+[settings.recipientName]
 type = "entry"
 label = "Recipient Name"
-value = "on"
-text = "recipientEmail@gmail.com"
+checkbox_value = "on"
+value = "john doe"
+
+[settings.referenceId]
+type = "entry"
+label = "Reference Id"
+checkbox_value = "on"
+value = "1234"
+
+[settings.locale]
+type = "combobox"
+label = "Locale"
+value = "en-US"
+checkbox_value = "off"
+
+[settings.locationId]
+type = "entry"
+label = "Location ID"
+checkbox_value = "on"
+value = "12345"
+
+[settings.tags]
+type = "entry"
+label = "Tags"
+checkbox_value = "on"
+value = "testTag,testtag2"

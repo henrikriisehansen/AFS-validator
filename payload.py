@@ -11,9 +11,9 @@ class PayloadType(Enum):
 class PayloadBuilder:
     """Builds the payload using composition."""
 
-    def __init__(self, payload_type:Enum,payloadKeyMapping:dict,templates:dict,**kwargs):
+    def __init__(self, payload_type:Enum,templates:dict,**kwargs):
         
-        self.base_payload = BasePayload(payloadKeyMapping,templates,**kwargs)
+        self.base_payload = BasePayload(templates,**kwargs)
        
         if payload_type == PayloadType.SERVICE_REVIEW:
             self.invitation = Service_review_payload(**kwargs)
@@ -70,32 +70,42 @@ class Product_review_sku_payload:
         self.productSkus = [v for v in kwargs.get("product_sku_entry").split(',') if v != '']
 
 class BasePayload:
-    def __init__(self,payloadKeyMapping:dict,templates:dict,**kwargs):
+    def __init__(self,templates:dict,**kwargs):
 
-        # parse payload key mapping
-        preferred_keys:list = {'preffered_send_time_checkbox', 'product_review_invitation_preffered_sendtime_checkbox'}
-        
+        filtered_payload = { k:v["value"] for k,v in kwargs.items() if v["checkbox_value"] == "on"}
+
+        for key,value in filtered_payload.items():
+
+            if key == "tags":
+                value = [v for v in value.split(',') if v!= '']
+
+            if key == "prefferedSendTime":
+                value = HelperFunctions(value).get_preferred_send_time()
+
+
+            setattr(self, key, value)
+
         # filter payload items based on key mapping and value 'on'
-        filteredPayloadItems = {k: v for k,v in kwargs.items() if k in payloadKeyMapping and v == 'on'}
-        
-        # initialize attributes based on payload key mapping and value from filtered items
-        for key in filteredPayloadItems.keys():
-            entry_key = key.replace('checkbox', 'entry')
-            entryValue = kwargs.get(entry_key, '')
+        # filteredPayloadItems = {k: v for k,v in kwargs.items() if k in payloadKeyMapping and v == 'on'}
+        # print(kwargs)
+        # # initialize attributes based on payload key mapping and value from filtered items
+        # for key in filteredPayloadItems.keys():
+        #     entry_key = key.replace('checkbox', 'entry')
+        #     entryValue = kwargs.get(entry_key, '')
 
-            # handle preferred send time
-            if key in preferred_keys:
-                entryValue = HelperFunctions(entryValue).get_preferred_send_time()
+        #     # handle preferred send time
+        #     if key in preferred_keys:
+        #         entryValue = HelperFunctions(entryValue).get_preferred_send_time()
 
-            # handle tags
-            if key == 'tags_checkbox':
-                entryValue = [v for v in entryValue.split(',') if v != '']
+        #     # handle tags
+        #     if key == 'tags_checkbox':
+        #         entryValue = [v for v in entryValue.split(',') if v != '']
 
-            # handle template
-            if key == 'template_combobox_checkbox':
-                entryValue = templates.get(entryValue, '')
+        #     # handle template
+        #     if key == 'template_combobox_checkbox':
+        #         entryValue = templates.get(entryValue, '')
 
-            setattr(self, payloadKeyMapping[key], entryValue)
+        #     setattr(self, payloadKeyMapping[key], entryValue)
 
 
 

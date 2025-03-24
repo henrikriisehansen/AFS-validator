@@ -162,11 +162,16 @@ class Config:
             "html": ""
         },
         "settings": {
-            "recipient_email":{"type": "entry","label": "Recipient Email","value":"on","text":"recipientEmail@gmail.com"},
-            "recipient_name":{"type": "entry","label": "Recipient Name","value":"on","text":"recipientEmail@gmail.com"}
+            "recipientEmail":{"type": "entry","label": "Recipient Email","checkbox_value":"on","value":"recipientEmail@gmail.com"},
+            "recipientName":{"type": "entry","label": "Recipient Name","checkbox_value":"on","value":"john doe"},
+            "referenceId":{"type": "entry","label": "Reference Id","checkbox_value":"on","value":"1234"},
+            "locale":{"type": "combobox","label": "Locale","value":"en-US","checkbox_value":"off"},
+            "locationId":{"type": "entry","label": "Location ID","checkbox_value":"on","value":"12345"},
+            "tags":{"type": "entry","label": "Tags","checkbox_value":"on","value":"testTag,testtag2"}
+            
 
         }
-        }
+    }
 
         return data
 
