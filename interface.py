@@ -22,7 +22,6 @@ class App(customtkinter.CTk):
 
         self.data_config: dict = self.data["config"]
         self.data_locale: dict = self.data["locale"]
-        self.data_payloadKeyMapping = self.data["payloadKeyMapping"]
         self.data_templates: dict = self.data["templates"]
         self.data_settings: dict = self.data["settings"]
 
@@ -34,9 +33,6 @@ class App(customtkinter.CTk):
         self.element_padx:int = 8
         self.element_pady:int = 8
 
-        # Widget elements dictionary
-        self.widget_elements:dict[str,object] = {}
-
         # Initialize email object and set window properties
         self.email:Email = Email()
         self.title("AFS - validator")
@@ -47,7 +43,7 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure((0), weight=1)
 
         # menu frame
-        self.menu = Menu(self)
+        self.menu = Menu(self,**self.data)
 
         # email frame
         self.email_frame = Email_frame(self)
@@ -76,6 +72,8 @@ class App(customtkinter.CTk):
         delattr(self,"settings_window")
         
     def event_callback(self,**kwargs):
+
+        """Update the layout based on the new state of the checkboxes and dropdowns"""
         
         # Handle state change for checkboxes and dropdowns
         if kwargs.get("state") == "on":
@@ -131,20 +129,16 @@ class App(customtkinter.CTk):
             self.data_settings[key]['checkbox_value'] = value.checkbox_var.get()
             self.data_settings[key]['value'] = value.value.get()
 
-       
-
-        
-
-        configElementValues:dict = settingsElements| self.widget_elements
         smptElements:dict = {}
         
         if hasattr(self,"settings_window"):
             smptElements:dict = self.settings_window._get()
-            
-        # configElements:dict = chain(configElementValues.items(),smptElements.items())
-        # for key,value in chain(configElementValues.items(),smptElements.items()):
 
-        #     self.data_config[key] = value.get()
+        
+        # update the data dictionary with the new merged data
+        for key,value in chain(self.menu.get_values().items(),smptElements.items()):
+
+            self.data_config[key] = value
 
     def generate_html(self, payload):
         

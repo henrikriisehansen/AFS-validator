@@ -79,35 +79,11 @@ class BasePayload:
             if key == "tags":
                 value = [v for v in value.split(',') if v!= '']
 
-            if key == "prefferedSendTime":
+            if key in ["prefferedSendTime"]:
                 value = HelperFunctions(value).get_preferred_send_time()
 
 
             setattr(self, key, value)
-
-        # filter payload items based on key mapping and value 'on'
-        # filteredPayloadItems = {k: v for k,v in kwargs.items() if k in payloadKeyMapping and v == 'on'}
-        # print(kwargs)
-        # # initialize attributes based on payload key mapping and value from filtered items
-        # for key in filteredPayloadItems.keys():
-        #     entry_key = key.replace('checkbox', 'entry')
-        #     entryValue = kwargs.get(entry_key, '')
-
-        #     # handle preferred send time
-        #     if key in preferred_keys:
-        #         entryValue = HelperFunctions(entryValue).get_preferred_send_time()
-
-        #     # handle tags
-        #     if key == 'tags_checkbox':
-        #         entryValue = [v for v in entryValue.split(',') if v != '']
-
-        #     # handle template
-        #     if key == 'template_combobox_checkbox':
-        #         entryValue = templates.get(entryValue, '')
-
-        #     setattr(self, payloadKeyMapping[key], entryValue)
-
-
 
           
 class HelperFunctions:

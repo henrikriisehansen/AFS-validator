@@ -51,15 +51,15 @@ class settingsWindow(customtkinter.CTkToplevel):
         self.mainFrame.close_settings_callback() # Close the settings window when the main window is closed.
         self.destroy()
 
-    def _get(self): 
+    def _get(self)-> dict: 
         """
         Retrieve all the values from the entry boxes and return them as a dictionary.
         """
         entryBoxes:dict = {
-            "smtp_sender_email":self.smtp_sender_email_Entry, 
-            "smtp_server":self.smtp_server_Entry, 
-            "smtp_port":self.smtp_port_Entry,
-            "smtp_password":self.smtp_password_Entry
+            "smtp_sender_email":self.smtp_sender_email_Entry.get(), 
+            "smtp_server":self.smtp_server_Entry.get(), 
+            "smtp_port":self.smtp_port_Entry.get(),
+            "smtp_password":self.smtp_password_Entry.get()
         }
 
         return entryBoxes

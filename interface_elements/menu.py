@@ -4,10 +4,12 @@ import customtkinter
 class Menu(customtkinter.CTkFrame):
 
 
-    def __init__(self,parent):
+    def __init__(self,parent,**kwargs):
         
         super().__init__(parent)
-        
+
+        self.set_values(kwargs.get('config'))
+
          # Column 0: Email settings
         self.set_email_frame = customtkinter.CTkFrame(master=parent,corner_radius=parent.frame_corner_radius,fg_color="transparent")
         self.set_email_frame.grid(row=0, column=0, sticky="news")
@@ -32,9 +34,7 @@ class Menu(customtkinter.CTkFrame):
 
         self.afs_email_Entry = customtkinter.CTkEntry(master=self.email_frame_entry_inner_frame, placeholder_text="AFS email")
         self.afs_email_Entry.grid(row=1, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ewn")
-        self.afs_email_Entry.insert(0, parent.data_config['afs_email'])
-        parent.widget_elements["afs_email"] = self.afs_email_Entry
-
+        
         # Invitation type combobox
         self.combobox_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="Select invitation type:", fg_color="transparent", font=parent.font)
         self.combobox_label.grid(row=2, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws")
@@ -43,10 +43,7 @@ class Menu(customtkinter.CTkFrame):
         self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
                                                   command=lambda x :parent.event_callback(**{"state":self.combobox.get()}), variable=self.combobox_var)
         self.combobox.grid(row=3, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ewn")
-        self.combobox.set(parent.data_config["invitation_type"])
-        parent.widget_elements["invitation_type"] = self.combobox
         
-
         # Buttons frame
         self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=parent.frame_corner_radius,fg_color="transparent",bg_color="transparent")
         self.set_email_frame_buttons.grid(row=2, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="sewn")
@@ -65,5 +62,24 @@ class Menu(customtkinter.CTkFrame):
 
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:parent.event_callback(**{"send email":True}))
         self.send_email.grid(row=1, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
+
+    def get_values(self):
+
+        return {
+            'afs_email': self.afs_email_Entry.get(),
+            'invitation_type': self.combobox.get()
+        }
+    
+    def set_values(self, **kwargs):
+
+        for key, value in kwargs.items():
+
+            if key == "afs_email":
+
+                getattr(self, f"{key}_Entry").delete(0, "end")
+                getattr(self, f"{key}_Entry").insert(0, value)
+
+            if key == "invitation_type":
+                self.combobox.set(value)
 
         
