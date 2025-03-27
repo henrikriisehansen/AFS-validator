@@ -8,7 +8,7 @@ class Menu(customtkinter.CTkFrame):
         
         super().__init__(parent)
 
-        self.set_values(kwargs.get('config'))
+        
 
          # Column 0: Email settings
         self.set_email_frame = customtkinter.CTkFrame(master=parent,corner_radius=parent.frame_corner_radius,fg_color="transparent")
@@ -63,6 +63,8 @@ class Menu(customtkinter.CTkFrame):
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:parent.event_callback(**{"send email":True}))
         self.send_email.grid(row=1, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
 
+        self.set_values(**kwargs.get('config'))
+
     def get_values(self):
 
         return {
@@ -75,7 +77,7 @@ class Menu(customtkinter.CTkFrame):
         for key, value in kwargs.items():
 
             if key == "afs_email":
-
+                
                 getattr(self, f"{key}_Entry").delete(0, "end")
                 getattr(self, f"{key}_Entry").insert(0, value)
 

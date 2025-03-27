@@ -55,7 +55,7 @@ class ComboBox(customtkinter.CTkFrame):
 
         self.combobox = customtkinter.CTkComboBox(
             master=parent, 
-            values=[k for (k,v) in controller.data_locale.items() if v is not None],
+            values=[k for (k,v) in getattr(controller,kwargs.get('data')).items() if v is not None],
             variable=self.combobox_var)
         
         self.combobox.grid(row=index+1, column=0, pady=8, sticky="ewn")

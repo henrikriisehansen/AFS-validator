@@ -28,7 +28,7 @@ class App(customtkinter.CTk):
         # Frame padding and styling
         self.frame_padx:int = 8
         self.frame_pady:int = 8
-        self.frame_corner_radius:int = 10
+        self.frame_corner_radius:int = 20
 
         self.element_padx:int = 8
         self.element_pady:int = 8
@@ -102,8 +102,8 @@ class App(customtkinter.CTk):
 
         # build the payload
         self.payload = PayloadBuilder(self.get_payload_type(),self.data_templates,**self.data_settings).build()
-        self.email_body.delete(0.0, "end")
-        self.email_body.insert(0.0, self.generate_html(self.payload))
+        self.email_frame.email_body.delete(0.0, "end")
+        self.email_frame.email_body.insert(0.0, self.generate_html(self.payload))
 
         # update the data dictionary with the new merged data
         self.data["config"] = self.data_config

@@ -34,8 +34,6 @@ class Config:
     def get_config(self):
         return self.data
 
-
-
     def default_config(self):
          
         data = {"config": {
@@ -114,20 +112,6 @@ class Config:
             "sv-SE": "se.trustpilot.com",
             "en-GB": "uk.trustpilot.com"
         },
-        "payloadKeyMapping": {
-            "reference_id_checkbox": "referenceId",
-            "recipient_email_checkbox": "recipientEmail",
-            "recipient_name_checkbox": "recipientName",
-            "locale_combobox_checkbox": "locale",
-            "location_id_checkbox": "locationId",
-            "tags_checkbox": "tags",
-            "template_combobox_checkbox": "templateId",
-            "sender_email_checkbox": "senderEmail",
-            "sender_name_checkbox": "senderName",
-            "reply_to_email_checkbox": "replyTo",
-            "preffered_send_time_checkbox": "preferredSendTime",
-            "product_review_invitation_preffered_sendtime_checkbox": "productReviewInvitationPreferredSendTime"
-        },
         "templates": {
             "English - Service reviews": "529c0abfefb96008b894ad02",
             "English - Optimized for product reviews": "5c17c7ebb565bb0001046fbd",
@@ -162,12 +146,19 @@ class Config:
             "html": ""
         },
         "settings": {
-            "recipientEmail":{"type": "entry","label": "Recipient Email","checkbox_value":"on","value":"recipientEmail@gmail.com"},
-            "recipientName":{"type": "entry","label": "Recipient Name","checkbox_value":"on","value":"john doe"},
-            "referenceId":{"type": "entry","label": "Reference Id","checkbox_value":"on","value":"1234"},
-            "locale":{"type": "combobox","label": "Locale","value":"en-US","checkbox_value":"off"},
-            "locationId":{"type": "entry","label": "Location ID","checkbox_value":"on","value":"12345"},
-            "tags":{"type": "entry","label": "Tags","checkbox_value":"on","value":"testTag,testtag2"}
+            "recipientEmail":{"type": "entry","label": "Recipient Email","checkbox_value":"on","value":"recipientEmail@gmail.com","basePayload":True},
+            "recipientName":{"type": "entry","label": "Recipient Name","checkbox_value":"on","value":"john doe","basePayload":True},
+            "referenceId":{"type": "entry","label": "Reference Id","checkbox_value":"on","value":"1234","basePayload":True},
+            "locale":{"type": "combobox","label": "Locale","value":"en-US","checkbox_value":"off","data":"data_locale","basePayload":True},
+            "locationId":{"type": "entry","label": "Location ID","checkbox_value":"on","value":"12345","basePayload":True},
+            "tags":{"type": "entry","label": "Tags","checkbox_value":"on","value":"testTag,testtag2","basePayload":True},
+            "templateId":{"type": "combobox","label": "Template","value":"English - Service reviews","checkbox_value":"off","data":"data_templates","basePayload":True},
+            "senderEmail":{"type": "entry","label": "Sender Email","checkbox_value":"on","value":"sender@gmail.com","basePayload":True},
+            "senderName":{"type": "entry","label": "Sender Name","checkbox_value":"on","value":"john doe","basePayload":True},
+            "replyTo":{"type": "entry","label": "Reply To","checkbox_value":"on","value":"reply@gmail.com","basePayload":True},
+            "preferredSendTime":{"type": "entry","label": "Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
+            "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
+            "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"on","value":"1234,1234","basePayload":False}
             
 
         }

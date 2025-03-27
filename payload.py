@@ -38,7 +38,6 @@ class PayloadBuilder:
             payload = vars(self.base_payload)
             payload.update(vars(self.invitation))
 
-        
         return {k: v for k, v in payload.items() if v != None}
 
 class Service_review_payload:
@@ -67,22 +66,27 @@ class Product_review_payload:
 
 class Product_review_sku_payload:
     def __init__(self,**kwargs):
-        self.productSkus = [v for v in kwargs.get("product_sku_entry").split(',') if v != '']
+
+        self.productSkus = [v for v in kwargs.get("productSkus")["value"].split(",") if v != ""]
 
 class BasePayload:
     def __init__(self,templates:dict,**kwargs):
 
-        filtered_payload = { k:v["value"] for k,v in kwargs.items() if v["checkbox_value"] == "on"}
+        basePayloadItems = [k for (k,v) in kwargs.items() if v["basePayload"]]
+
+        filtered_payload = { k:v["value"] for k,v in kwargs.items() if v["checkbox_value"] == "on" and k in basePayloadItems}
 
         for key,value in filtered_payload.items():
 
             if key == "tags":
                 value = [v for v in value.split(',') if v!= '']
 
-            if key in ["prefferedSendTime"]:
+            if key in ["preferredSendTime","productReviewInvitationPreferredSendTime"]:
                 value = HelperFunctions(value).get_preferred_send_time()
 
-
+            if key == "templateId":
+                value = templates[value]
+                
             setattr(self, key, value)
 
           
