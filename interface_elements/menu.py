@@ -8,8 +8,6 @@ class Menu(customtkinter.CTkFrame):
         
         super().__init__(parent)
 
-        
-
          # Column 0: Email settings
         self.set_email_frame = customtkinter.CTkFrame(master=parent,corner_radius=parent.frame_corner_radius,fg_color="transparent")
         self.set_email_frame.grid(row=0, column=0, sticky="news")
@@ -25,7 +23,7 @@ class Menu(customtkinter.CTkFrame):
         # Inner frame for email entry
         self.email_frame_entry_inner_frame = customtkinter.CTkFrame(master=self.set_email_frame_entry,corner_radius=parent.frame_corner_radius)
         self.email_frame_entry_inner_frame.grid(row=0, column=0, sticky="new")
-        self.email_frame_entry_inner_frame.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.email_frame_entry_inner_frame.grid_rowconfigure((0, 1, 2, 3,4,5,6), weight=1)
         self.email_frame_entry_inner_frame.grid_columnconfigure((0), weight=1)
 
         # AFS email label and entry
@@ -43,7 +41,16 @@ class Menu(customtkinter.CTkFrame):
         self.combobox = customtkinter.CTkComboBox(master=self.email_frame_entry_inner_frame, values=["Service review", "Service & Product review using SKU", "Service & Product Review(add/update Product Review)"],
                                                   command=lambda x :parent.event_callback(**{"state":self.combobox.get()}), variable=self.combobox_var)
         self.combobox.grid(row=3, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ewn")
-        
+
+        # Email Address to,bcc fields
+
+        self.to_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="To:", fg_color="transparent", font=parent.font) 
+        self.to_label.grid(row=4, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
+
+        self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent", font=parent.font)
+        self.bcc_label.grid(row=5, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
+
+
         # Buttons frame
         self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=parent.frame_corner_radius,fg_color="transparent",bg_color="transparent")
         self.set_email_frame_buttons.grid(row=2, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="sewn")
@@ -55,6 +62,8 @@ class Menu(customtkinter.CTkFrame):
         self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sew")
         self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
+
+
 
         #Generate and send email buttons
         self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:parent.open_settings_callback())

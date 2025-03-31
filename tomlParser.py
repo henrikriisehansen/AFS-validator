@@ -7,11 +7,11 @@ class Config:
 
         self.data = None
 
-        # if not os.path.exists('config.toml'):
+        if not os.path.exists('config.toml'):
 
-        self.data = self.default_config()
-        with open('config.toml', 'w') as f:
-                toml.dump(self.data, f)
+            self.data = self.default_config()
+            with open('config.toml', 'w') as f:
+                    toml.dump(self.data, f)
 
         try:
             with open("config.toml", "r") as f:
@@ -44,48 +44,8 @@ class Config:
             "smtp_server": "smtp.gmail.com",
             "smtp_port": "587",
             "smtp_password": "password",
-            "smtp_sender_email": "senderEmail@gmail.com",
-            "recipient_email_checkbox": "on",
-            "recipient_email_entry": "recipientEmail@gmail.com",
-            "reference_id_checkbox": "on",
-            "reference_id_entry": "1234",
-            "recipient_name_checkbox": "on",
-            "recipient_name_entry": "recipientName",
-            "locale_combobox_checkbox": "off",
-            "locale_combobox_entry": "en-US",
-            "template_combobox_checkbox": "off",
-            "template_combobox_entry": "English - Service reviews",
-            "sender_email_checkbox": "off",
-            "sender_email_entry": "senderEmail@domain.com",
-            "sender_name_checkbox": "off",
-            "sender_name_entry": "senderName",
-            "reply_to_email_checkbox": "off",
-            "reply_to_email_entry": "replyToEmail@gmail.com",
-            "location_id_checkbox": "off",
-            "location_id_entry": "12345",
-            "tags_checkbox": "testTag,testtag2",
-            "tags_entry": "1234,1234",
-            "preffered_send_time_checkbox": "off",
-            "preffered_send_time_entry": "0",
-            "product_review_invitation_preffered_sendtime_checkbox": "off",
-            "product_review_invitation_preffered_sendtime_entry": "0",
-            "product_url_checkbox": "off",
-            "product_url_entry": "https://www.example.com",
-            "product_image_url_checkbox": "off",
-            "product_image_url_entry": "https://www.example.com/image.jpg",
-            "product_name_checkbox": "off",
-            "product_name_entry": "Example Product",
-            "product_sku_checkbox": "off",
-            "product_sku_entry": "1234,12345",
-            "product_gtin_checkbox": "off",
-            "product_gtin_entry": "",
-            "product_mpn_checkbox": "off",
-            "product_mpn_entry": "",
-            "product_brand_checkbox": "off",
-            "product_brand_entry": "Acme",
-            "product_category_google_id_checkbox": "off",
-            "product_category_google_id_entry": "1253",
-            "generate_random_reference_number": "False"
+            "smtp_sender_email": "senderEmail@gmail.com"
+            
         },
         "locale": {
             "en-US": "www.trustpilot.com",
@@ -158,7 +118,16 @@ class Config:
             "replyTo":{"type": "entry","label": "Reply To","checkbox_value":"on","value":"reply@gmail.com","basePayload":True},
             "preferredSendTime":{"type": "entry","label": "Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
             "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
-            "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"on","value":"1234,1234","basePayload":False}
+            "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "name": {"type": "entry","label": "Product name","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "sku": {"type": "entry","label": "Product SKU","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "gtin": {"type": "entry","label": "Product GTIN","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "mpn":{"type": "entry","label": "Product MPN","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "brand": {"type": "entry","label": "Product brand","checkbox_value":"on","value":"1234,1234","basePayload":False},
+            "productCategoryGoogleId": {"type": "entry","label": "productCategoryGoogleId","checkbox_value":"on","value":"1234,1234","basePayload":False}
+           
             
 
         }

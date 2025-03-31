@@ -60,6 +60,10 @@ class ComboBox(customtkinter.CTkFrame):
         
         self.combobox.grid(row=index+1, column=0, pady=8, sticky="ewn")
 
+        if self.checkbox_var.get() == "off":
+            self.combobox.grid_remove()
+        
+
         self.checkBox._command = lambda x=self.checkBox:controller.event_callback(**{"state":x.get(),"entry":self.combobox})
         self.combobox._command = lambda y=self.combobox:controller.event_callback(**{"state":"","entry":""})
 
@@ -85,6 +89,10 @@ class Entry(customtkinter.CTkFrame):
 
             self.entry = customtkinter.CTkEntry(master=parent, textvariable=self.entry_var)
             self.entry.grid(row=index+1, column=0,pady=8, sticky="ewn")
+
+           
+            if self.checkbox_var.get() == "off":
+                self.entry.grid_remove()
 
             self.checkBox._command = lambda x=self.checkBox:controller.event_callback(**{"state":x.get(),"entry":self.entry})
 

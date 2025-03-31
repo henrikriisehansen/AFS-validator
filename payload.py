@@ -51,18 +51,16 @@ class Product_review_payload:
         self.products = [
             {
 
-        "productUrl": kwargs.get("product_url_entry",None),
-        "imageUrl": kwargs.get("product_image_url_entry",None),
-        "name": kwargs.get("product_name_entry",None),
-        "sku": kwargs.get("product_sku_entry"),
-        "gtin": kwargs.get("product_gtin_entry",None),
-        "mpn":kwargs.get("product_mpn_entry",None),
-        "brand": kwargs.get("product_brand_entry"),
-        "productCategoryGoogleId": kwargs.get("product_category_google_id_entry",None)
+        "productUrl":kwargs.get("productUrl").get("value"),
+        "imageUrl": kwargs.get("imageUrl").get("value"),
+        "name": kwargs.get("name").get("value"),
+        "sku": kwargs.get("sku").get("value"),
+        "gtin": kwargs.get("gtin").get("value"),
+        "mpn":kwargs.get("gtin").get("value"),
+        "brand": kwargs.get("brand").get("value"),
+        "productCategoryGoogleId": kwargs.get("productCategoryGoogleId").get("value")
         
         }]
-
-
 
 class Product_review_sku_payload:
     def __init__(self,**kwargs):
