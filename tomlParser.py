@@ -7,11 +7,11 @@ class Config:
 
         self.data = None
 
-        if not os.path.exists('config.toml'):
+        # if not os.path.exists('config.toml'):
 
-            self.data = self.default_config()
-            with open('config.toml', 'w') as f:
-                    toml.dump(self.data, f)
+        self.data = self.default_config()
+        with open('config.toml', 'w') as f:
+                toml.dump(self.data, f)
 
         try:
             with open("config.toml", "r") as f:
@@ -103,30 +103,30 @@ class Config:
             "Swedish - Optimized for product reviews": "5c5b0e17d036820001e42b25"
         },
         "payload": {
-            "html": ""
+            "html": "<html>\n<head>\n<script type='application/json+trustpilot'>\n{\n \"recipientEmail\": \"recipientEmail@gmail.com\",\n \"recipientName\": \"john doe\",\n \"referenceId\": \"1234\"\n}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"
         },
         "settings": {
             "recipientEmail":{"type": "entry","label": "Recipient Email","checkbox_value":"on","value":"recipientEmail@gmail.com","basePayload":True},
             "recipientName":{"type": "entry","label": "Recipient Name","checkbox_value":"on","value":"john doe","basePayload":True},
             "referenceId":{"type": "entry","label": "Reference Id","checkbox_value":"on","value":"1234","basePayload":True},
             "locale":{"type": "combobox","label": "Locale","value":"en-US","checkbox_value":"off","data":"data_locale","basePayload":True},
-            "locationId":{"type": "entry","label": "Location ID","checkbox_value":"on","value":"12345","basePayload":True},
-            "tags":{"type": "entry","label": "Tags","checkbox_value":"on","value":"testTag,testtag2","basePayload":True},
+            "locationId":{"type": "entry","label": "Location ID","checkbox_value":"off","value":"12345","basePayload":True},
+            "tags":{"type": "entry","label": "Tags","checkbox_value":"off","value":"testTag,testtag2","basePayload":True},
             "templateId":{"type": "combobox","label": "Template","value":"English - Service reviews","checkbox_value":"off","data":"data_templates","basePayload":True},
-            "senderEmail":{"type": "entry","label": "Sender Email","checkbox_value":"on","value":"sender@gmail.com","basePayload":True},
-            "senderName":{"type": "entry","label": "Sender Name","checkbox_value":"on","value":"john doe","basePayload":True},
-            "replyTo":{"type": "entry","label": "Reply To","checkbox_value":"on","value":"reply@gmail.com","basePayload":True},
-            "preferredSendTime":{"type": "entry","label": "Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
-            "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"on","value":"0","basePayload":True},
-            "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "name": {"type": "entry","label": "Product name","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "sku": {"type": "entry","label": "Product SKU","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "gtin": {"type": "entry","label": "Product GTIN","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "mpn":{"type": "entry","label": "Product MPN","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "brand": {"type": "entry","label": "Product brand","checkbox_value":"on","value":"1234,1234","basePayload":False},
-            "productCategoryGoogleId": {"type": "entry","label": "productCategoryGoogleId","checkbox_value":"on","value":"1234,1234","basePayload":False}
+            "senderEmail":{"type": "entry","label": "Sender Email","checkbox_value":"off","value":"sender@gmail.com","basePayload":True},
+            "senderName":{"type": "entry","label": "Sender Name","checkbox_value":"off","value":"john doe","basePayload":True},
+            "replyTo":{"type": "entry","label": "Reply To","checkbox_value":"off","value":"reply@gmail.com","basePayload":True},
+            "preferredSendTime":{"type": "entry","label": "Preferred Send Time","checkbox_value":"off","value":"0","basePayload":True},
+            "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"off","value":"0","basePayload":True},
+            "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "name": {"type": "entry","label": "Product name","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "sku": {"type": "entry","label": "Product SKU","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "gtin": {"type": "entry","label": "Product GTIN","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "mpn":{"type": "entry","label": "Product MPN","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "brand": {"type": "entry","label": "Product brand","checkbox_value":"off","value":"1234,1234","basePayload":False},
+            "productCategoryGoogleId": {"type": "entry","label": "productCategoryGoogleId","checkbox_value":"off","value":"1234,1234","basePayload":False}
            
             
 

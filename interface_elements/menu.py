@@ -48,7 +48,7 @@ class Menu(customtkinter.CTkFrame):
         self.to_label.grid(row=4, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
 
         self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent", font=parent.font)
-        self.bcc_label.grid(row=5, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
+        self.bcc_label.grid(row=5, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="wn") 
 
 
         # Buttons frame
@@ -82,7 +82,7 @@ class Menu(customtkinter.CTkFrame):
         }
     
     def set_values(self, **kwargs):
-
+ 
         for key, value in kwargs.items():
 
             if key == "afs_email":
@@ -92,5 +92,7 @@ class Menu(customtkinter.CTkFrame):
 
             if key == "invitation_type":
                 self.combobox.set(value)
+
+            
 
         

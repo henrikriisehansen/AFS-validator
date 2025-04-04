@@ -105,10 +105,6 @@ class App(customtkinter.CTk):
         self.email_frame.email_body.delete(0.0, "end")
         self.email_frame.email_body.insert(0.0, self.generate_html(self.payload))
 
-        # update the data dictionary with the new merged data
-        self.data["config"] = self.data_config
-        self.data["payload"] = {"html":self.generate_html(self.payload)}
-
     def get_payload_type(self):
 
         # map the payload type
