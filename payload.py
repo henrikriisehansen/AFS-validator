@@ -11,9 +11,9 @@ class PayloadType(Enum):
 class PayloadBuilder:
     """Builds the payload using composition."""
 
-    def __init__(self, payload_type:Enum,templates:dict,**kwargs):
+    def __init__(self, payload_type:Enum,templates:dict,productTemplates:dict,**kwargs):
         
-        self.base_payload = BasePayload(templates,**kwargs)
+        self.base_payload = BasePayload(templates,productTemplates,**kwargs)
        
         if payload_type == PayloadType.SERVICE_REVIEW:
             self.invitation = Service_review_payload(**kwargs)
@@ -68,7 +68,7 @@ class Product_review_sku_payload:
         self.productSkus = [v for v in kwargs.get("productSkus")["value"].split(",") if v != ""]
 
 class BasePayload:
-    def __init__(self,templates:dict,**kwargs):
+    def __init__(self,templates:dict,productTemplates:dict,**kwargs):
 
         basePayloadItems = [k for (k,v) in kwargs.items() if v["basePayload"]]
 
@@ -84,6 +84,9 @@ class BasePayload:
 
             if key == "templateId":
                 value = templates[value]
+
+            if key == "productReviewInvitationTemplateId":
+                value = productTemplates[value]
                 
             setattr(self, key, value)
 

@@ -102,6 +102,22 @@ class Config:
             "Swedish - Service reviews": "529c0b40dec7e10ed0ba75cc",
             "Swedish - Optimized for product reviews": "5c5b0e17d036820001e42b25"
         },
+        "productTemplates": {
+            "English - Optimized for product reviews": "5c17c7ebb565bb0001046fbd",
+            "Danish - Optimized for product reviews": "5c505b600e0d37000127c6ff",
+            "Dutch - Optimized for product reviews": "5c5b121464c50a0001c5a55a",
+            "Finnish - Optimized for product reviews": "5c5b1351048417000135ad6f",
+            "French - Optimized for product reviews": "5c5b1311f366710001540aaa",
+            "German - Optimized for product reviews": "5c50357526f61800019768ca",
+            "Italian - Optimized for product reviews": "5c5b12ce3501e50001628e88",
+            "Japanese - Optimized for product reviews": "5c5b1292d098210001a66f32",
+            "Norwegian - Optimized for product reviews": "5c5b11ba47ad0f0001f388da",
+            "Polish - Optimized for product reviews": "5c5b10dd47942a0001639034",
+            "Portuguese - Optimized for product reviews": "5c5b0fd73b442a000141e542",
+            "Portuguese (Brazil) - Optimized for product reviews": "5c5b143d6cdcf00001a8f174",
+            "Spanish - Optimized for product reviews": "5c5b13c49d4c8600019d8de3",
+            "Swedish - Optimized for product reviews": "5c5b0e17d036820001e42b25"
+        },
         "payload": {
             "html": "<html>\n<head>\n<script type='application/json+trustpilot'>\n{\n \"recipientEmail\": \"recipientEmail@gmail.com\",\n \"recipientName\": \"john doe\",\n \"referenceId\": \"1234\"\n}\n</script>\n</head>\n<body>\n<p>Hi!<br>\nHow are you?<br>\n</p>\n</body>\n</html>"
         },
@@ -118,6 +134,7 @@ class Config:
             "replyTo":{"type": "entry","label": "Reply To","checkbox_value":"off","value":"reply@gmail.com","basePayload":True},
             "preferredSendTime":{"type": "entry","label": "Preferred Send Time","checkbox_value":"off","value":"0","basePayload":True},
             "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"off","value":"0","basePayload":True},
+            "productReviewInvitationTemplateId":{"type": "combobox","label": "Product Review Invitation Template","checkbox_value":"off","value":"English - Optimized for product reviews","data":"data_product_templates","basePayload":True},
             "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"off","value":"1234,1234","basePayload":False},
             "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},
             "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},

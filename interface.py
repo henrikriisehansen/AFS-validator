@@ -23,7 +23,9 @@ class App(customtkinter.CTk):
         self.data_config: dict = self.data["config"]
         self.data_locale: dict = self.data["locale"]
         self.data_templates: dict = self.data["templates"]
+        self.data_product_templates:dict = self.data["productTemplates"]
         self.data_settings: dict = self.data["settings"]
+        
 
         # Frame padding and styling
         self.frame_padx:int = 8
@@ -75,6 +77,11 @@ class App(customtkinter.CTk):
 
         """Update the layout based on the new state of the checkboxes and dropdowns"""
         
+        # Create the payload and update the data
+        self.get_values()
+        self.build_payload()
+        self.tomlData.save_config(**self.data)
+
         # Handle state change for checkboxes and dropdowns
         if kwargs.get("state") == "on":
             kwargs["entry"].grid() 
@@ -88,10 +95,7 @@ class App(customtkinter.CTk):
 
             return
         
-        # Create the payload and update the data
-        self.get_values()
-        self.build_payload()
-        self.tomlData.save_config(**self.data)
+        
         
     def send_smtp_email(self):
 
@@ -101,9 +105,12 @@ class App(customtkinter.CTk):
     def build_payload(self):
 
         # build the payload
-        self.payload = PayloadBuilder(self.get_payload_type(),self.data_templates,**self.data_settings).build()
+        self.payload = PayloadBuilder(self.get_payload_type(),self.data_templates,self.data_product_templates,**self.data_settings).build()
         self.email_frame.email_body.delete(0.0, "end")
         self.email_frame.email_body.insert(0.0, self.generate_html(self.payload))
+
+        # save the payload
+        self.data["payload"]["html"] = self.generate_html(self.payload)
 
     def get_payload_type(self):
 
@@ -135,6 +142,8 @@ class App(customtkinter.CTk):
         for key,value in chain(self.menu.get_values().items(),smptElements.items()):
 
             self.data_config[key] = value
+
+        
 
     def generate_html(self, payload):
         
