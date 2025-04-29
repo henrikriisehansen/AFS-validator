@@ -7,11 +7,11 @@ class Config:
 
         self.data = None
 
-        # if not os.path.exists('config.toml'):
+        if not os.path.exists('config.toml'):
 
-        self.data = self.default_config()
-        with open('config.toml', 'w') as f:
-                toml.dump(self.data, f)
+            self.data = self.default_config()
+            with open('config.toml', 'w') as f:
+                    toml.dump(self.data, f)
 
         try:
             with open("config.toml", "r") as f:
@@ -136,14 +136,14 @@ class Config:
             "productReviewInvitationPreferredSendTime":{"type": "entry","label": "Product Review Invitation Preferred Send Time","checkbox_value":"off","value":"0","basePayload":True},
             "productReviewInvitationTemplateId":{"type": "combobox","label": "Product Review Invitation Template","checkbox_value":"off","value":"English - Optimized for product reviews","data":"data_product_templates","basePayload":True},
             "productSkus":{"type": "entry","label": "Product SKUs","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "name": {"type": "entry","label": "Product name","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "sku": {"type": "entry","label": "Product SKU","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "gtin": {"type": "entry","label": "Product GTIN","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "mpn":{"type": "entry","label": "Product MPN","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "brand": {"type": "entry","label": "Product brand","checkbox_value":"off","value":"1234,1234","basePayload":False},
-            "productCategoryGoogleId": {"type": "entry","label": "productCategoryGoogleId","checkbox_value":"off","value":"1234,1234","basePayload":False}
+            "productUrl": {"type": "entry","label": "productUrl","checkbox_value":"off","value":"http://www.mycompanystore.com/products/12345.html","basePayload":False},
+            "imageUrl": {"type": "entry","label": "imageUrl","checkbox_value":"off","value":"http://www.mycompanystore.com/products/images/12345.jpg","basePayload":False},
+            "name": {"type": "entry","label": "Product name","checkbox_value":"off","value":"Metal Toy Car","basePayload":False},
+            "sku": {"type": "entry","label": "Product SKU","checkbox_value":"off","value":"ABC-1234","basePayload":False},
+            "gtin": {"type": "entry","label": "Product GTIN","checkbox_value":"off","value":"01234567890","basePayload":False},
+            "mpn":{"type": "entry","label": "Product MPN","checkbox_value":"off","value":"7TX1641","basePayload":False},
+            "brand": {"type": "entry","label": "Product brand","checkbox_value":"off","value":"Acme","basePayload":False},
+            "productCategoryGoogleId": {"type": "entry","label": "productCategoryGoogleId","checkbox_value":"off","value":"1234","basePayload":False}
            
             
 

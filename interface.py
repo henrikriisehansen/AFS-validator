@@ -89,13 +89,11 @@ class App(customtkinter.CTk):
         if kwargs.get("state") == "off":
             kwargs["entry"].grid_remove()
 
+        #send email
         if kwargs.get("send email"):
            
             self.send_smtp_email()
 
-            return
-        
-        
         
     def send_smtp_email(self):
 
