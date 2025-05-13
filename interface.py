@@ -12,6 +12,8 @@ import string
 
 from tomlParser import Config
 
+#todo JSON validator
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -62,7 +64,7 @@ class App(customtkinter.CTk):
         # open settings window if it's not already opened
         if not hasattr(self,"settings_window"):
             self.settings_window:settingsWindow = settingsWindow(self)  # create window if its None or destroyed
-            self.settings_window._set(**self.data_config)
+            self.settings_window.tab_view._set(**self.data_config)
             
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
