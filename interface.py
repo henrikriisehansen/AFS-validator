@@ -63,8 +63,7 @@ class App(customtkinter.CTk):
         
         # open settings window if it's not already opened
         if not hasattr(self,"settings_window"):
-            self.settings_window:settingsWindow = settingsWindow(self)  # create window if its None or destroyed
-            self.settings_window.tab_view._set(**self.data_config)
+            self.settings_window:settingsWindow = settingsWindow(self,**self.data_config)  # create window if its None or destroyed
             
             self.settings_window.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
         else:
@@ -143,7 +142,8 @@ class App(customtkinter.CTk):
 
             self.data_config[key] = value
 
-        
+        # update the menu object
+        self.menu.set_values(**self.data)
 
     def generate_html(self, payload):
         

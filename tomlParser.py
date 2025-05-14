@@ -7,11 +7,11 @@ class Config:
 
         self.data = None
 
-        if not os.path.exists('config.toml'):
+        # if not os.path.exists('config.toml'):
 
-            self.data = self.default_config()
-            with open('config.toml', 'w') as f:
-                    toml.dump(self.data, f)
+        self.data = self.default_config()
+        with open('config.toml', 'w') as f:
+                toml.dump(self.data, f)
 
         try:
             with open("config.toml", "r") as f:
@@ -45,7 +45,8 @@ class Config:
             "smtp_port": "587",
             "smtp_password": "password",
             "smtp_sender_email": "senderEmail@gmail.com",
-            "SendAfsDirect": False
+            "sendAfsDirect": "off",
+            "randomReferenceNumber": "off"
             
         },
         "locale": {

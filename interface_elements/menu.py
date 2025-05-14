@@ -50,7 +50,6 @@ class Menu(customtkinter.CTkFrame):
         self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent", font=parent.font)
         self.bcc_label.grid(row=5, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="wn") 
 
-
         # Buttons frame
         self.set_email_frame_buttons = customtkinter.CTkFrame(master=self.set_email_frame,corner_radius=parent.frame_corner_radius,fg_color="transparent",bg_color="transparent")
         self.set_email_frame_buttons.grid(row=2, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="sewn")
@@ -62,8 +61,6 @@ class Menu(customtkinter.CTkFrame):
         self.email_frame_buttons_inner_frame.grid(row=0, column=0, sticky="sew")
         self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
-
-
 
         #Generate and send email buttons
         self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:parent.open_settings_callback())
@@ -82,7 +79,16 @@ class Menu(customtkinter.CTkFrame):
         }
     
     def set_values(self, **kwargs):
- 
+
+        if kwargs.get("sendAfsDirect") == "on":
+            self.to_label._text = f"To: {kwargs.get('afs_email')}"
+            self.bcc_label.grid_remove()
+            
+        else:
+            self.to_label._text = f"To: {kwargs.get('afs_email')}"
+            self.bcc_label._text = f"bcc: {kwargs.get('reciepientEmail')}"
+            self.bcc_label.grid()
+            
         for key, value in kwargs.items():
 
             if key == "afs_email":
@@ -92,6 +98,9 @@ class Menu(customtkinter.CTkFrame):
 
             if key == "invitation_type":
                 self.combobox.set(value)
+
+            
+                
 
             
 
