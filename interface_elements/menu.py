@@ -5,6 +5,8 @@ class Menu(customtkinter.CTkFrame):
 
 
     def __init__(self,parent,**kwargs):
+
+        data = kwargs
         
         super().__init__(parent)
 
@@ -30,7 +32,10 @@ class Menu(customtkinter.CTkFrame):
         self.afs_email_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="AFS email:", fg_color="transparent", font=parent.font)
         self.afs_email_label.grid(row=0, column=0,  padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws")
 
-        self.afs_email_Entry = customtkinter.CTkEntry(master=self.email_frame_entry_inner_frame, placeholder_text="AFS email")
+        self.afs_email_Entry = customtkinter.CTkEntry(
+            master=self.email_frame_entry_inner_frame, 
+            textvariable=customtkinter.StringVar(value=data["config"]["afs_email"]),
+            placeholder_text="AFS email")
         self.afs_email_Entry.grid(row=1, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ewn")
         
         # Invitation type combobox
@@ -44,7 +49,7 @@ class Menu(customtkinter.CTkFrame):
 
         # Email Address to,bcc fields
 
-        self.to_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="To:", fg_color="transparent", font=parent.font) 
+        self.to_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text=f"To: ", fg_color="transparent", font=parent.font) 
         self.to_label.grid(row=4, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
 
         self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent", font=parent.font)
@@ -62,14 +67,18 @@ class Menu(customtkinter.CTkFrame):
         self.email_frame_buttons_inner_frame.grid_rowconfigure((0,1), weight=1)
         self.email_frame_buttons_inner_frame.grid_columnconfigure((0), weight=1)
 
-        #Generate and send email buttons
+        # Validate JSON, Settings and send email buttons
+
+        self.validateJSON = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Validate JSON", command=lambda:parent.event_callback())
+        self.validateJSON.grid(row=0, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
+
         self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:parent.open_settings_callback())
-        self.settings.grid(row=0, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
+        self.settings.grid(row=1, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
 
         self.send_email = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Send Email", command=lambda:parent.event_callback(**{"send email":True}))
-        self.send_email.grid(row=1, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
+        self.send_email.grid(row=2, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
 
-        self.set_values(**kwargs.get('config'))
+        self.set_values(**kwargs)
 
     def get_values(self):
 
@@ -80,21 +89,20 @@ class Menu(customtkinter.CTkFrame):
     
     def set_values(self, **kwargs):
 
-        if kwargs.get("sendAfsDirect") == "on":
-            self.to_label._text = f"To: {kwargs.get('afs_email')}"
+        data = kwargs
+        
+        if data["config"]["sendAfsDirect"] == "on":
+
+            self.to_label.configure(text=f"To: {data["config"]["afs_email"]}")
             self.bcc_label.grid_remove()
             
         else:
-            self.to_label._text = f"To: {kwargs.get('afs_email')}"
-            self.bcc_label._text = f"bcc: {kwargs.get('reciepientEmail')}"
+
+            self.to_label.configure(text=f"To: {data["settings"]["recipientEmail"]["value"]}")
+            self.bcc_label.configure(text=f"bcc: {data["config"]["afs_email"]}")
             self.bcc_label.grid()
             
         for key, value in kwargs.items():
-
-            if key == "afs_email":
-                
-                getattr(self, f"{key}_Entry").delete(0, "end")
-                getattr(self, f"{key}_Entry").insert(0, value)
 
             if key == "invitation_type":
                 self.combobox.set(value)

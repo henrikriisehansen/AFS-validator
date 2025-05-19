@@ -111,7 +111,7 @@ class TabView(customtkinter.CTkTabview):
             text="Generate random reference number",
             onvalue="on",
             offvalue="off",
-            command=lambda:master.mainFrame.event_callback(),
+            command=lambda:master.mainFrame.event_callback(**{"generateRandomString":self.randomReferenceNumber.get()}),
             variable=customtkinter.StringVar(value=kwargs.get("randomReferenceNumber")))
         self.randomReferenceNumber.grid(row=1,column=0,padx=master.element_padx,pady=8,sticky="w")
 

@@ -77,7 +77,12 @@ class App(customtkinter.CTk):
     def event_callback(self,**kwargs):
 
         """Update the layout based on the new state of the checkboxes and dropdowns"""
-        
+
+        # 
+        if kwargs.get("generateRandomString") == "on":
+            self.data["settings"]["referenceId"]["value"] = self.generate_random_string()
+            self.settings_frame.frames["referenceId"].value.set(self.data["settings"]["referenceId"]["value"])
+
         # Create the payload and update the data
         self.get_values()
         self.build_payload()
@@ -95,6 +100,7 @@ class App(customtkinter.CTk):
            
             self.send_smtp_email()
 
+        
         
     def send_smtp_email(self):
 
@@ -154,12 +160,15 @@ class App(customtkinter.CTk):
         return html
     
     def generate_random_string(self):
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=20))
 
     def copy_link_callback(self):
         self.clipboard_clear()
         self.clipboard_append(self.link.get())
         self.update()
+
+       
+        
 
 
 
