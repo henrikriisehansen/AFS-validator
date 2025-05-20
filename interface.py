@@ -9,6 +9,7 @@ from interface_elements.email_frame import Email_frame
 from interface_elements.settings_frame import Settings_frame
 import random
 import string
+from validateJSONWindow import ValidateJSON
 
 from tomlParser import Config
 
@@ -58,7 +59,15 @@ class App(customtkinter.CTk):
         self.build_payload()
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
-    
+
+    def open_validateJSON_callback(self)->None:
+
+        if not hasattr(self,"validataJSON_window"):
+            self.validataJSON_window = ValidateJSON(self,**self.data_config)
+        else:
+            self.validataJSON_window.close_window()
+           
+
     def open_settings_callback(self)-> None:
         
         # open settings window if it's not already opened
@@ -73,6 +82,10 @@ class App(customtkinter.CTk):
     def close_settings_callback(self):
         
         delattr(self,"settings_window")
+        
+    def close_validateJSON_callback(self):
+        
+        delattr(self,"validataJSON_window")
         
     def event_callback(self,**kwargs):
 

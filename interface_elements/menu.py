@@ -69,7 +69,7 @@ class Menu(customtkinter.CTkFrame):
 
         # Validate JSON, Settings and send email buttons
 
-        self.validateJSON = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Validate JSON", command=lambda:parent.event_callback())
+        self.validateJSON = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Validate JSON", command=lambda:parent.open_validateJSON_callback())
         self.validateJSON.grid(row=0, column=0, padx=parent.element_padx, pady=parent.element_pady, sticky="ew")
 
         self.settings = customtkinter.CTkButton(master= self.email_frame_buttons_inner_frame, text="Settings", command=lambda:parent.open_settings_callback())
