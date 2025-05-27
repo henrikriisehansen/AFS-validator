@@ -37,7 +37,6 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.validationTextBox = customtkinter.CTkTextbox(master=self.rightFrame,corner_radius=parent.frame_corner_radius)
         self.validationTextBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
         
-
         self.textBox = customtkinter.CTkTextbox(master=self.leftFrame,corner_radius=parent.frame_corner_radius)
         self.textBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
         
@@ -105,10 +104,47 @@ class ValidateJSON(customtkinter.CTkToplevel):
             "type": "object",
             "properties": {
                 "recipientEmail": {"type": "string", "format": "email"},
-                "recipientName": {"type": "string", "minimum": 2},
+                "recipientName": {"type": "string", "minLength": 1},
                 "referenceId": {"type": "string", "minLength": 1},
+                "templateId": {"type": "string", "minLength": 1},
+                "productReviewInvitationTemplateId": {"type": "string"},
+                "locale": {"type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$"},
+                "senderEmail": {"type": "string", "format": "email"},
+                "senderName": {"type": "string", "minLength": 1},
+                "replyTo": {"type": "string", "format": "email"},
+                "preferredSendTime": {"type": "string", "format": "date-time"},
+                "productReviewInvitationPreferredSendTime": {"type": "string", "format": "date-time"},
+                "tags": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "productUrl": {"type": "string", "format": "uri"},
+                            "imageUrl": {"type": "string", "format": "uri"},
+                            "name": {"type": "string", "minLength": 1},
+                            "sku": {"type": "string"},
+                            "gtin": {"type": "string", "pattern": "^[0-9]+$"},
+                            "mpn": {"type": "string"},
+                            "brand": {"type": "string"},
+                            "productCategoryGoogleId": {"type": "string", "pattern": "^[0-9]+$"}
+                        },
+                        "required": ["productUrl","imageUrl","name","sku"]
+                    }
+                },
+                "productSkus": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
             },
-            "required": ["recipientEmail", "recipientName", "referenceId"],
+            "required": [
+                "recipientEmail",
+                "recipientName",
+                "referenceId"
+            ]
         }
 
         # Validate the JSON data against the schema

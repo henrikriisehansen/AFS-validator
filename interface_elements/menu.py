@@ -49,10 +49,10 @@ class Menu(customtkinter.CTkFrame):
 
         # Email Address to,bcc fields
 
-        self.to_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text=f"To: ", fg_color="transparent", font=parent.font) 
+        self.to_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text=f"To: ", fg_color="transparent") 
         self.to_label.grid(row=4, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="ws") 
 
-        self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent", font=parent.font)
+        self.bcc_label = customtkinter.CTkLabel(master=self.email_frame_entry_inner_frame, text="bcc:", fg_color="transparent")
         self.bcc_label.grid(row=5, column=0, padx=parent.frame_padx, pady=parent.frame_pady, sticky="wn") 
 
         # Buttons frame
