@@ -13,8 +13,6 @@ from validateJSONWindow import ValidateJSON
 
 from tomlParser import Config
 
-#todo JSON validator
-
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -57,6 +55,8 @@ class App(customtkinter.CTk):
         self.settings_frame = Settings_frame(self)
 
         self.build_payload()
+
+        # layout
         self.bind("<KeyRelease>",lambda event:self.event_callback(**{"key":event.keysym}))
 
 

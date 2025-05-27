@@ -1,6 +1,7 @@
 import customtkinter
-from jsonschema import validate
+from jsonschema import validate, Draft7Validator
 from jsonschema.exceptions import ValidationError
+import json
 
 class ValidateJSON(customtkinter.CTkToplevel):
     def __init__(self,parent, **kwargs):
@@ -26,37 +27,169 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.leftFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius)
         self.leftFrame.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
         self.leftFrame.grid_columnconfigure((0), weight=1)
-        self.leftFrame.grid_rowconfigure((0), weight=1)
-
+        self.leftFrame.grid_rowconfigure((0,1), weight=1)
 
         self.rightFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius)
         self.rightFrame.grid(row=0, column=1,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
+        self.rightFrame.grid_columnconfigure((0), weight=1)
+        self.rightFrame.grid_rowconfigure((0), weight=1)
 
+        self.validationTextBox = customtkinter.CTkTextbox(master=self.rightFrame,corner_radius=parent.frame_corner_radius)
+        self.validationTextBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
+        
+
+        self.textBox = customtkinter.CTkTextbox(master=self.leftFrame,corner_radius=parent.frame_corner_radius)
+        self.textBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
+        
         self.validateJSONButton = customtkinter.CTkButton(
             master=self.leftFrame,
             text="Validate JSON",
-            font=self.font)
-        self.validateJSONButton.grid(row=0, column=0,sticky="nsew",padx=parent.element_padx,pady=parent.element_pady)
+            command=lambda:self.validateJSON(self.textBox.get("0.0", "end-1c"))
+           )
+        self.validateJSONButton.grid(row=1, column=0,sticky="sew",padx=parent.element_padx,pady=parent.element_pady)
         
     def close_window(self):
         self.parent.close_validateJSON_callback() # Close the settings window when the main window is closed.
         self.destroy()
 
 
+    def updateTextValidation(self,text):
+
+        self.validationTextBox.delete("0.0", "end")
+        self.validationTextBox.insert("0.0", text)
+
     def validateJSON(self,jsonData):
 
-        studentSchema = {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "rollnumber": {"type": "number"},
-                "marks": {"type": "number"},
-            },
-        }
+        if not isinstance(jsonData, str) or not jsonData.strip():
+            self.updateTextValidation("No JSON data provided.")
+            return
 
         try:
-            validate(instance=jsonData, schema=studentSchema)
-        except ValidationError as err:
-            return False
+            data = json.loads(jsonData)
+        except json.JSONDecodeError as e:
+            # --- Build a user-friendly, visual error message ---
+            
+            # 1. Split the document into lines
+            lines = e.doc.splitlines()
+            
+            # 2. Get the line where the error occurred
+            # Ensure the line number is valid before accessing the list
+            error_line_index = e.lineno - 1
+            if 0 <= error_line_index < len(lines):
+                error_line = lines[error_line_index]
+                
+                # 3. Create a pointer string to place a '^' under the error column
+                # (e.colno - 1) creates the correct number of spaces
+                pointer = ' ' * (e.colno - 1) + '^'
+                
+                # 4. Format the final message
+                # The > helps delineate the code snippet
+                error_message = (
+                    f"JSON Formatting Error: {e.msg}\n\n"
+                    f"Error found at line {e.lineno}, column {e.colno}:\n"
+                    f"> {error_line}\n"
+                    f"> {pointer}\n"
+                )
+                self.updateTextValidation(error_message)
+            else:
+                # Fallback for rare cases where line number is out of sync
+                error_message = f"JSON Error: {e}"
+
+                self.updateTextValidation(error_message)
+
+            return
+        # If the JSON is valid, proceed with schema validation
+        # --- JSON Schema Validation ---
+        #Define the JSON schema
+        schema = {
+            "type": "object",
+            "properties": {
+                "recipientEmail": {"type": "string", "format": "email"},
+                "recipientName": {"type": "string", "minimum": 2},
+                "referenceId": {"type": "string", "minLength": 1},
+            },
+            "required": ["recipientEmail", "recipientName", "referenceId"],
+        }
+
+        # Validate the JSON data against the schema
+        try:
+            validate(instance=data, schema=schema)
+            print("Validation successful!")
+        except ValidationError as e:
+            error_path_str = " -> ".join(map(str, e.path))
+            # Attempt to get the problematic value if path is not empty
+            problematic_value = e.instance
+            if e.path: # If the error is within a nested structure
+                temp_data = data
+                try:
+                    for key in e.path:
+                        temp_data = temp_data[key]
+                    problematic_value = temp_data
+                except (KeyError, TypeError): # Path might point to a missing key or non-subscriptable item
+                    problematic_value = "<value not directly accessible or missing>"
+
+
+            highlighted_error = (
+                f"Validation Error:\n"
+                f"  Message: {e.message}\n"
+                f"  Path in data: {error_path_str or 'root'}\n"
+                f"  Problematic Value: '{problematic_value}' (type: {type(problematic_value).__name__})\n"
+                f"  Failed on validator: '{e.validator}' with value '{e.validator_value}'\n"
+                f"  Schema path: {list(e.schema_path)}"
+            )
+            print(highlighted_error)
+
+        validator = Draft7Validator(schema)
+        errors = validator.iter_errors(data)
+
+        error_messages = []
+        for error in sorted(errors, key=lambda e: e.path): # Sort errors for consistent output
+            error_path_str = " -> ".join(map(str, error.path))
+            problematic_value = error.instance # The instance fragment that caused the error
+
+            # To get the specific key and its value for object properties:
+            key_value_info = ""
+            if error.path and isinstance(error.absolute_path, (list, tuple)) and len(error.absolute_path) > 0:
+                key_name = error.path[-1] # Last element in the path is usually the key
+                parent_path = list(error.absolute_path)[:-1]
+                parent_data = data
+                try:
+                    for p_key in parent_path:
+                        parent_data = parent_data[p_key]
+                    if isinstance(parent_data, dict) and key_name in parent_data:
+                        key_value_info = f"  Key: '{key_name}', Value: '{parent_data[key_name]}'"
+                    elif isinstance(parent_data, list) and isinstance(key_name, int) and key_name < len(parent_data):
+                        key_value_info = f"  Index: {key_name}, Value: '{parent_data[key_name]}'"
+                    else: # This handles cases like 'required' where the key itself is missing
+                        key_value_info = f"  Concerning Key/Item: '{key_name}' (value might be missing or path points to structure)"
+                except (KeyError, TypeError, IndexError):
+                    key_value_info = f"  Concerning Key/Item: '{key_name}' (error accessing parent data)"
+
+
+            highlighted_error = (
+                f"Error: {error.message}\n"
+                f"  Path: {error_path_str or 'root'}\n"
+                f"{key_value_info}\n"
+                f"  Problematic instance part: '{error.instance}'\n"
+                f"  Validator: '{error.validator}', Expected: '{error.validator_value}'"
+
+            )
+            error_messages.append(highlighted_error)
+
+        if error_messages:
+            text:list = []
+            text.append("Found validation errors:\n")
+            for msg in error_messages:
+                text.append(msg + "\n" + "-"*30)
+
+            self.updateTextValidation("\n".join(text))
+        else:
+            self.updateTextValidation("Validation successful!")
+        
+
+        
+
+
+       
        
 

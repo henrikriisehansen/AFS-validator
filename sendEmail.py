@@ -9,6 +9,8 @@ class Email:
         
         self.data:dict = kwargs.get('config', None)
         self.payload:dict = kwargs.get('payload', None)
+        self.settings:dict = kwargs.get('settings', None)
+
 
     def send_email(self) -> None:
         
@@ -18,16 +20,20 @@ class Email:
         smtp_sender_email = self.data.get('smtp_sender_email', None)
 
         email_subject = self.data.get('email_subject', None)
-        email_to = self.data.get('email_to', None)
-        email_bcc = self.data.get('afs_email', None)
     
         simple_email_context = ssl.create_default_context()
 
         msg = MIMEMultipart('alternative')
         msg['Subject'] =  email_subject
         msg['From'] = smtp_sender_email
-        msg['To'] = email_to
-        msg['Bcc'] = email_bcc
+        
+        if self.data.get('sendAfsDirect', None) in ['off',None]:
+            
+            msg['To'] = self.settings['recipientEmail']['value']
+            msg['Bcc'] = self.data['afs_email']
+            
+        else:
+            msg['To'] = self.data['afs_email']
 
         html = MIMEText(self.payload.get('html',None), 'html')
         msg.attach(html)
@@ -41,12 +47,3 @@ class Email:
             print(e)
         finally:
             server.quit()
-
-
-
-
-
-
-
-
-

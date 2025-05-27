@@ -7,11 +7,11 @@ class Config:
 
         self.data = None
 
-        # if not os.path.exists('config.toml'):
+        if not os.path.exists('config.toml'):
 
-        self.data = self.default_config()
-        with open('config.toml', 'w') as f:
-                toml.dump(self.data, f)
+            self.data = self.default_config()
+            with open('config.toml', 'w') as f:
+                    toml.dump(self.data, f)
 
         try:
             with open("config.toml", "r") as f:
