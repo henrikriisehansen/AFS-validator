@@ -150,7 +150,6 @@ class ValidateJSON(customtkinter.CTkToplevel):
         # Validate the JSON data against the schema
         try:
             validate(instance=data, schema=schema)
-            print("Validation successful!")
         except ValidationError as e:
             error_path_str = " -> ".join(map(str, e.path))
             # Attempt to get the problematic value if path is not empty
