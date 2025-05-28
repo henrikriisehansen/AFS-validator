@@ -1,1 +1,5 @@
 config.toml
+__pycache__/
+*.py[cod]
+output
+*.pyc
