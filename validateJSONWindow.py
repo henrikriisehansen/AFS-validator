@@ -12,7 +12,7 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.parent = parent
 
         self.font = customtkinter.CTkFont(family="roboto", size=12, weight="bold")
-        self.header_font = customtkinter.CTkFont(family="roboto", size=16, weight="bold")
+        self.header_font = customtkinter.CTkFont(family="roboto", size=12, weight="bold")
         self.title("Validate JSON")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -24,28 +24,46 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.frame.grid_columnconfigure((0,1), weight=1)
         self.frame.grid_rowconfigure((0), weight=1)
 
-        self.leftFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius)
-        self.leftFrame.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
+        # leftFrame
+        self.leftFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius,fg_color="transparent")
+        self.leftFrame.grid(row=0, column=0,sticky="nsew")
         self.leftFrame.grid_columnconfigure((0), weight=1)
-        self.leftFrame.grid_rowconfigure((0,1), weight=1)
+        self.leftFrame.grid_rowconfigure((0), weight=1)
 
-        self.rightFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius)
-        self.rightFrame.grid(row=0, column=1,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
-        self.rightFrame.grid_columnconfigure((0), weight=1)
-        self.rightFrame.grid_rowconfigure((0), weight=1)
+        self.leftInnerFrame = customtkinter.CTkFrame(master=self.leftFrame,corner_radius=parent.frame_corner_radius)
+        self.leftInnerFrame.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="new")
+        self.leftInnerFrame.grid_columnconfigure((0), weight=1)
+        self.leftInnerFrame.grid_rowconfigure((0,1,2), weight=1)
 
-        self.validationTextBox = customtkinter.CTkTextbox(master=self.rightFrame,corner_radius=parent.frame_corner_radius)
-        self.validationTextBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
-        
-        self.textBox = customtkinter.CTkTextbox(master=self.leftFrame,corner_radius=parent.frame_corner_radius)
-        self.textBox.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
-        
+        self.label = customtkinter.CTkLabel(master=self.leftInnerFrame, text="JSON Data", font=self.header_font)
+        self.label.grid(row=0, column=0,sticky="nw",padx=parent.element_padx,pady=parent.element_pady)
+
+        self.textBox = customtkinter.CTkTextbox(master=self.leftInnerFrame,corner_radius=parent.frame_corner_radius,height=490)
+        self.textBox.grid(row=1, column=0,padx=parent.element_padx,pady=2,sticky="nsew")
+
         self.validateJSONButton = customtkinter.CTkButton(
-            master=self.leftFrame,
+            master=self.leftInnerFrame,
             text="Validate JSON",
             command=lambda:self.validateJSON(self.textBox.get("0.0", "end-1c"))
            )
-        self.validateJSONButton.grid(row=1, column=0,sticky="sew",padx=parent.element_padx,pady=parent.element_pady)
+        self.validateJSONButton.grid(row=2, column=0,sticky="new",padx=parent.element_padx,pady=parent.element_pady)
+
+        # rightFrame
+        self.rightFrame = customtkinter.CTkFrame(master=self.frame,corner_radius=parent.frame_corner_radius,fg_color="transparent")
+        self.rightFrame.grid(row=0, column=1,sticky="nsew")
+        self.rightFrame.grid_columnconfigure((0), weight=1)
+        self.rightFrame.grid_rowconfigure((0), weight=1)  
+
+        self.rightInnerFrame = customtkinter.CTkFrame(master=self.rightFrame,corner_radius=parent.frame_corner_radius)
+        self.rightInnerFrame.grid(row=0, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="new")
+        self.rightInnerFrame.grid_columnconfigure((0), weight=1)
+        self.rightInnerFrame.grid_rowconfigure((0,1), weight=1)
+
+        self.validationLabel = customtkinter.CTkLabel(master=self.rightInnerFrame, text="Validation Result", font=self.header_font)
+        self.validationLabel.grid(row=0, column=0,sticky="nw",padx=parent.element_padx,pady=2)
+       
+        self.validationTextBox = customtkinter.CTkTextbox(master=self.rightInnerFrame,corner_radius=parent.frame_corner_radius,height=550)
+        self.validationTextBox.grid(row=1, column=0,padx=parent.element_padx,pady=parent.element_pady,sticky="nsew")
         
     def close_window(self):
         self.parent.close_validateJSON_callback() # Close the settings window when the main window is closed.
@@ -172,7 +190,7 @@ class ValidateJSON(customtkinter.CTkToplevel):
                 f"  Failed on validator: '{e.validator}' with value '{e.validator_value}'\n"
                 f"  Schema path: {list(e.schema_path)}"
             )
-            print(highlighted_error)
+
 
         validator = Draft7Validator(schema)
         errors = validator.iter_errors(data)
