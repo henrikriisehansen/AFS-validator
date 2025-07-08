@@ -75,6 +75,19 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.validationTextBox.delete("0.0", "end")
         self.validationTextBox.insert("0.0", text)
 
+    def _display_message_in_output_area(self, message: str, is_error: bool = False):
+        """Helper to display messages or data in the right-hand output textbox."""
+        self.validationTextBox.configure(state="normal") # Enable to modify
+        self.validationTextBox.delete("0.0", "end")
+        self.validationTextBox.insert("0.0", message)
+
+        print(f"Displaying message: {message}")  # Debugging output
+        if is_error:
+            self.validationTextBox.configure(text_color="red")
+        else:
+           self.validationTextBox.configure(text_color="green")
+           
+
     def validateJSON(self,jsonData):
 
         if not isinstance(jsonData, str) or not jsonData.strip():
@@ -107,12 +120,12 @@ class ValidateJSON(customtkinter.CTkToplevel):
                     f"> {error_line}\n"
                     f"> {pointer}\n"
                 )
-                self.updateTextValidation(error_message)
+                self._display_message_in_output_area(error_message, is_error=True)
             else:
                 # Fallback for rare cases where line number is out of sync
                 error_message = f"JSON Error: {e}"
 
-                self.updateTextValidation(error_message)
+                self._display_message_in_output_area(error_message, is_error=True)
 
             return
         # If the JSON is valid, proceed with schema validation
@@ -235,12 +248,11 @@ class ValidateJSON(customtkinter.CTkToplevel):
             for msg in error_messages:
                 text.append(msg + "\n" + "-"*30)
 
-            self.updateTextValidation("\n".join(text))
+            self._display_message_in_output_area(message="\n".join(text), is_error=True)
         else:
-            self.updateTextValidation("Validation successful!")
-        
-
-        
+            self._display_message_in_output_area(message="Validation successful!")
+            self.validationTextBox.configure(text_color="green")
+            
 
 
        
