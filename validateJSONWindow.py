@@ -69,12 +69,6 @@ class ValidateJSON(customtkinter.CTkToplevel):
         self.parent.close_validateJSON_callback() # Close the settings window when the main window is closed.
         self.destroy()
 
-
-    def updateTextValidation(self,text):
-
-        self.validationTextBox.delete("0.0", "end")
-        self.validationTextBox.insert("0.0", text)
-
     def _display_message_in_output_area(self, message: str, is_error: bool = False):
         """Helper to display messages or data in the right-hand output textbox."""
         self.validationTextBox.configure(state="normal") # Enable to modify
@@ -163,19 +157,22 @@ class ValidateJSON(customtkinter.CTkToplevel):
                             "brand": {"type": "string"},
                             "productCategoryGoogleId": {"type": "string", "pattern": "^[0-9]+$"}
                         },
-                        "required": ["productUrl","imageUrl","name","sku"]
+                        "required": ["productUrl","imageUrl","name","sku"],
+                        "additionalProperties": False
                     }
                 },
                 "productSkus": {
                     "type": "array",
-                    "items": {"type": "string"}
+                    "items": {"type": "string"},
+                    "additionalProperties": False
                 }
             },
             "required": [
                 "recipientEmail",
                 "recipientName",
                 "referenceId"
-            ]
+            ],
+            "additionalProperties": False
         }
 
         # Validate the JSON data against the schema
