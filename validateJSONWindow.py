@@ -139,6 +139,7 @@ class ValidateJSON(customtkinter.CTkToplevel):
                 "replyTo": {"type": "string", "format": "email"},
                 "preferredSendTime": {"type": "string", "format": "date-time"},
                 "productReviewInvitationPreferredSendTime": {"type": "string", "format": "date-time"},
+                "locationId": {"type": "string", "minLength": 1},
                 "tags": {
                     "type": "array",
                     "items": {"type": "string"}
